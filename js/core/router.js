@@ -100,6 +100,11 @@ const Router = {
             window.missionGameLoopId = null;
         }
 
+        // Pastikan kamera AR dinonaktifkan saat meninggalkan halaman AR
+        if (typeof ARPage !== 'undefined') {
+            ARPage.stopCamera();
+        }
+
         switch(pageId) {
             case 'splash':
                 container.innerHTML = Pages.splash();
@@ -130,6 +135,10 @@ const Router = {
             case 'level5':
                 container.innerHTML = Pages.level5();
                 Level5.init();
+                break;
+            case 'ar':
+                container.innerHTML = Pages.ar();
+                ARPage.init();
                 break;
             case 'score':
                 container.innerHTML = Pages.score();

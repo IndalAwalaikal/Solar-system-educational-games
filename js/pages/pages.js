@@ -35,7 +35,7 @@ const Pages = {
                 MENGENAL<br/><span class="text-white text-2xl md:text-5xl">TATA SURYA</span>
             </h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 w-full max-w-3xl px-4 z-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 w-full max-w-4xl px-4 z-10">
                 
                 <div onclick="Router.go('materi')" class="card-menu-cyan p-4 md:p-6 flex flex-row md:flex-col items-center justify-start md:justify-between gap-4 md:gap-0 min-h-[90px] md:min-h-[280px] cursor-pointer">
                     <div class="w-16 h-16 md:w-32 md:h-32 flex items-center justify-center float-anim shrink-0">
@@ -54,6 +54,16 @@ const Pages = {
                     <div class="flex flex-col items-start md:items-center">
                         <span class="font-bubble-title text-xl md:text-2xl tracking-wider text-white font-bubble-stroke text-left md:text-center">MISI PETUALANGAN</span>
                         <p class="text-[9px] md:text-[11px] text-cyan-200 mt-1">Selesaikan Level 1 s.d. Level 5</p>
+                    </div>
+                </div>
+
+                <div onclick="Router.go('ar')" class="card-menu-cyan p-4 md:p-6 flex flex-row md:flex-col items-center justify-start md:justify-between gap-4 md:gap-0 min-h-[90px] md:min-h-[280px] cursor-pointer">
+                    <div class="w-16 h-16 md:w-32 md:h-32 flex items-center justify-center float-anim shrink-0" style="animation-delay: 1s;">
+                        <img src="${ASSETS.astronautQuiz}" alt="Astronaut AR Explorer" class="w-12 h-12 md:w-28 md:h-28 rounded-full object-cover border-2 md:border-4 border-white shadow-xl" onerror="this.src='${ASSETS.placeholder}'">
+                    </div>
+                    <div class="flex flex-col items-start md:items-center">
+                        <span class="font-bubble-title text-xl md:text-2xl tracking-wider text-white font-bubble-stroke">JELAJAH AR</span>
+                        <p class="text-[9px] md:text-[11px] text-cyan-200 mt-1">Scan Planet di Sekitarmu 📸</p>
                     </div>
                 </div>
 
@@ -270,14 +280,82 @@ const Pages = {
                     <h4 class="font-bold text-white text-xs">CARA BERMAIN:</h4>
                     <ul class="list-disc pl-5 space-y-1 text-[11px]">
                         <li><strong>Materi:</strong> Baca materi sains lengkap dengan sub-bab detail untuk memahami teori-teori planet.</li>
-                        <li><strong>Game (Level 1 & 2):</strong> Urutkan dan cocokkan planet visual kustom.</li>
-                        <li><strong>Kuis (Level 3 & 4):</strong> Jawab kuis benar salah dan pilihan ganda.</li>
-                        <li><strong>Mission Space (Level 5):</strong> Terbang tangkap bintang di luar angkasa!</li>
+                        <li><strong>Misi Petualangan:</strong> Mainkan Level 1 s.d. Level 5 secara berurutan.</li>
+                        <li><strong>Jelajah AR:</strong> Scan planet yang melayang di sekitarmu lewat kamera HP!</li>
                     </ul>
                 </div>
-                <p class="text-[11px] text-gray-500 text-center border-t border-white/5 pt-4">Versi 7.0 (Enhanced with Real Images & Complete Content) | Dikembangkan untuk IPA Kurikulum Merdeka.</p>
+                <p class="text-[11px] text-gray-500 text-center border-t border-white/5 pt-4">Versi 8.0 (Enhanced AR Edition) | Dikembangkan untuk IPA Kurikulum Merdeka.</p>
             </div>
         </div>
+        `;
+    },
+
+    ar() {
+        return `
+        <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6 max-w-3xl mx-auto relative">
+            <!-- Header -->
+            <div class="flex items-center justify-between gap-3 border-b border-cyan-500/20 pb-3 mb-3">
+                <div>
+                    <span class="text-[10px] font-bold text-yellow-400 uppercase tracking-wider">Misi Penjelajah Antariksa</span>
+                    <h2 class="font-bubble-title text-lg md:text-2xl text-white">JELAJAH AR</h2>
+                </div>
+                <button onclick="ARPage.stopCamera(); Router.go('home')" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-full text-xs font-bold border border-white/10 transition-all shrink-0">← Kembali</button>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mb-3">
+                <div class="flex justify-between items-center text-[10px] mb-1">
+                    <span class="text-gray-400 font-semibold uppercase tracking-wider">Planet Teridentifikasi</span>
+                    <span id="ar-planet-count" class="text-cyan-300 font-bold">0 / 8</span>
+                </div>
+                <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div id="ar-progress-fill" class="h-full bg-gradient-to-r from-cyan-500 to-green-400 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Main AR Camera View -->
+            <div class="relative w-full aspect-[4/3] md:aspect-video bg-black rounded-2xl border border-cyan-500/20 overflow-hidden mb-3" id="ar-camera-container">
+                <!-- Video feed -->
+                <video id="ar-video-feed" class="absolute inset-0 w-full h-full object-cover z-0" autoplay playsinline muted></video>
+
+                <!-- Fallback (animated starfield ketika kamera tidak tersedia) -->
+                <div id="ar-camera-fallback" class="absolute inset-0 z-0 bg-[#050d1a]"></div>
+
+                <!-- Scan line overlay effect -->
+                <div class="absolute inset-0 z-[5] pointer-events-none ar-scanline"></div>
+
+                <!-- Planet spawn overlay -->
+                <div id="ar-overlay-area" class="absolute inset-0 z-10 pointer-events-none"></div>
+
+                <!-- Corner brackets HUD -->
+                <div class="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-cyan-400/50 rounded-tl-lg z-20 pointer-events-none"></div>
+                <div class="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-cyan-400/50 rounded-tr-lg z-20 pointer-events-none"></div>
+                <div class="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-cyan-400/50 rounded-bl-lg z-20 pointer-events-none"></div>
+                <div class="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-cyan-400/50 rounded-br-lg z-20 pointer-events-none"></div>
+
+                <!-- Crosshair center -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 z-20 pointer-events-none opacity-30">
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-px h-3 bg-cyan-400"></div>
+                    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-px h-3 bg-cyan-400"></div>
+                    <div class="absolute left-0 top-1/2 -translate-y-1/2 h-px w-3 bg-cyan-400"></div>
+                    <div class="absolute right-0 top-1/2 -translate-y-1/2 h-px w-3 bg-cyan-400"></div>
+                </div>
+            </div>
+
+            <!-- Mission Status Bar -->
+            <div id="ar-mission-status" class="text-[11px] text-gray-300 bg-black/40 border border-cyan-500/20 rounded-xl px-3 py-2 mb-3 flex items-center gap-2">
+                <span class="text-cyan-300">🔭</span> Menginisialisasi radar pemindai planet...
+            </div>
+
+            <!-- Mini Solar System Map -->
+            <div class="bg-black/40 border border-cyan-500/20 rounded-xl p-3">
+                <p class="text-[10px] text-gray-500 uppercase font-bold tracking-wider mb-2 text-center">Peta Tata Surya — Planet yang Ditangkap</p>
+                <div id="ar-mini-solarsystem" class="w-full h-24 md:h-32 relative overflow-hidden rounded-lg bg-[#050d1a]"></div>
+            </div>
+        </div>
+
+        <!-- Quiz Overlay (fullscreen modal, hidden by default) -->
+        <div id="ar-quiz-overlay" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden overflow-y-auto"></div>
         `;
     }
 };

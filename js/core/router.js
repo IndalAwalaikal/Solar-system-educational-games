@@ -56,7 +56,7 @@ const GameState = {
     updateGlobalHeader() {
         const playerTag = document.getElementById('player-welcome-tag');
         if (playerTag) {
-            playerTag.innerHTML = `Selamat Belajar, <span class="text-yellow-300 font-bold">${this.playerName || "Rex"}</span>`;
+            playerTag.innerHTML = `Selamat Belajar, <span class="text-yellow-300 font-bold">${this.playerName || "Sobat IPA"}</span>`;
         }
     }
 };
@@ -75,6 +75,21 @@ const Router = {
             horizonBg.style.transform = 'translateY(0)';
         } else {
             horizonBg.style.transform = 'translateY(100%)';
+        }
+
+        // Sembunyikan elemen header tertentu jika berada di halaman splash
+        const playerTag = document.getElementById('player-welcome-tag');
+        const btnScore = document.querySelector('[title="Statistik & Skor"]');
+        const btnHome = document.querySelector('[title="Kembali ke Menu Utama"]');
+
+        if (pageId === 'splash') {
+            if (playerTag) playerTag.style.visibility = 'hidden';
+            if (btnScore) btnScore.style.visibility = 'hidden';
+            if (btnHome) btnHome.style.visibility = 'hidden';
+        } else {
+            if (playerTag) playerTag.style.visibility = 'visible';
+            if (btnScore) btnScore.style.visibility = 'visible';
+            if (btnHome) btnHome.style.visibility = pageId === 'home' ? 'hidden' : 'visible';
         }
 
         if (window.missionGameLoopId) {

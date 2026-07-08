@@ -35,27 +35,26 @@ const Pages = {
                 MENGENAL<br/><span class="text-white text-2xl md:text-5xl">TATA SURYA</span>
             </h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 w-full max-w-4xl px-4 z-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 w-full max-w-3xl px-4 z-10">
                 
                 <div onclick="Router.go('materi')" class="card-menu-cyan p-4 md:p-6 flex flex-row md:flex-col items-center justify-start md:justify-between gap-4 md:gap-0 min-h-[90px] md:min-h-[280px] cursor-pointer">
                     <div class="w-16 h-16 md:w-32 md:h-32 flex items-center justify-center float-anim shrink-0">
                         <img src="${ASSETS.astronautMateri}" alt="Astronaut Reading" class="w-12 h-12 md:w-28 md:h-28 rounded-full object-cover border-2 md:border-4 border-white shadow-xl" onerror="this.src='${ASSETS.placeholder}'">
                     </div>
-                    <span class="font-bubble-title text-xl md:text-2xl tracking-wider text-white font-bubble-stroke">MATERI</span>
+                    <div class="flex flex-col items-start md:items-center">
+                        <span class="font-bubble-title text-xl md:text-2xl tracking-wider text-white font-bubble-stroke">MATERI</span>
+                        <p class="text-[9px] md:text-[11px] text-cyan-200 mt-1">Ensiklopedia Tata Surya & Planet</p>
+                    </div>
                 </div>
 
-                <div onclick="openGameSelector()" class="card-menu-cyan p-4 md:p-6 flex flex-row md:flex-col items-center justify-start md:justify-between gap-4 md:gap-0 min-h-[90px] md:min-h-[280px] cursor-pointer">
+                <div onclick="openMissionSelector()" class="card-menu-cyan p-4 md:p-6 flex flex-row md:flex-col items-center justify-start md:justify-between gap-4 md:gap-0 min-h-[90px] md:min-h-[280px] cursor-pointer">
                     <div class="w-16 h-16 md:w-32 md:h-32 flex items-center justify-center float-anim shrink-0" style="animation-delay: 0.5s;">
                         <img src="${ASSETS.astronautGame}" alt="Astronaut Gaming" class="w-12 h-12 md:w-28 md:h-28 rounded-full object-cover border-2 md:border-4 border-white shadow-xl" onerror="this.src='${ASSETS.placeholder}'">
                     </div>
-                    <span class="font-bubble-title text-xl md:text-2xl tracking-wider text-white font-bubble-stroke">GAME</span>
-                </div>
-
-                <div onclick="openQuizSelector()" class="card-menu-cyan p-4 md:p-6 flex flex-row md:flex-col items-center justify-start md:justify-between gap-4 md:gap-0 min-h-[90px] md:min-h-[280px] cursor-pointer">
-                    <div class="w-16 h-16 md:w-32 md:h-32 flex items-center justify-center float-anim shrink-0" style="animation-delay: 1s;">
-                        <img src="${ASSETS.astronautQuiz}" alt="Astronaut Quiz" class="w-12 h-12 md:w-28 md:h-28 rounded-full object-cover border-2 md:border-4 border-white shadow-xl" onerror="this.src='${ASSETS.placeholder}'">
+                    <div class="flex flex-col items-start md:items-center">
+                        <span class="font-bubble-title text-xl md:text-2xl tracking-wider text-white font-bubble-stroke text-left md:text-center">MISI PETUALANGAN</span>
+                        <p class="text-[9px] md:text-[11px] text-cyan-200 mt-1">Selesaikan Level 1 s.d. Level 5</p>
                     </div>
-                    <span class="font-bubble-title text-xl md:text-2xl tracking-wider text-white font-bubble-stroke">KUIS</span>
                 </div>
 
             </div>

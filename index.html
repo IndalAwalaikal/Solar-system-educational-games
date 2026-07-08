@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Mengenal Tata Surya - Media Pembelajaran IPA Interaktif</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        space: {
+                            bg: '#051329',
+                            cyan: '#00f0ff',
+                            gold: '#ffc000',
+                            goldDark: '#b38000'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Luckiest+Guy&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="text-white relative min-h-screen flex flex-col justify-between overflow-x-hidden overflow-y-auto">
+
+    <canvas id="stars-canvas"></canvas>
+
+    <div id="app-container"
+        class="relative z-10 w-full max-w-6xl mx-auto px-4 py-4 flex flex-col justify-between min-h-screen">
+
+        <header class="flex items-center justify-between gap-4 mt-2">
+            <div class="flex items-center gap-2 md:gap-3">
+                <button onclick="Router.go('about')"
+                    class="w-10 h-10 md:w-14 md:h-14 btn-gold-bubble rounded-full flex items-center justify-center font-bubble-title text-xl md:text-2xl text-[#805000]"
+                    title="Tentang & Bantuan">
+                    ?
+                </button>
+                <button id="btn-sound-toggle" onclick="SoundManager.toggle()"
+                    class="w-10 h-10 md:w-14 md:h-14 btn-gold-bubble rounded-full flex items-center justify-center text-sm md:text-lg text-[#805000]"
+                    title="Suara">
+                    <span id="sound-icon-status"></span>
+                </button>
+            </div>
+
+            <div class="text-center">
+                <p id="player-welcome-tag"
+                    class="text-[10px] md:text-sm font-semibold tracking-wide text-cyan-300 drop-shadow">Selamat
+                    Belajar, Rex!</p>
+            </div>
+
+            <div class="flex items-center gap-2 md:gap-3">
+                <button onclick="Router.go('score')"
+                    class="w-10 h-10 md:w-14 md:h-14 btn-gold-bubble rounded-full flex items-center justify-center text-base md:text-xl text-[#805000]"
+                    title="Statistik & Skor">
+                    👤
+                </button>
+                <button onclick="confirmExit()"
+                    class="w-10 h-10 md:w-14 md:h-14 btn-gold-bubble rounded-full flex items-center justify-center text-base md:text-xl text-[#805000]"
+                    title="Kembali ke Menu Utama">
+                    🏠
+                </button>
+            </div>
+        </header>
+
+        <main id="main-content" class="flex-grow flex flex-col justify-center py-4 md:py-6">
+        </main>
+
+        <footer class="text-center text-[10px] text-[#000000] z-20 pb-safe pb-2"
+            style="padding-bottom: max(0.5rem, env(safe-area-inset-bottom))">
+            © 2026 Mengenal Tata Surya - Media Pembelajaran Digital IPA Kelas VII
+        </footer>
+    </div>
+
+    <div id="bottom-planet-horizon"
+        class="fixed bottom-0 left-0 right-0 h-40 planet-horizon z-0 pointer-events-none transition-all duration-500">
+        <div class="crater w-16 h-8 left-12 top-6"></div>
+        <div class="crater w-24 h-10 left-1/3 top-12 opacity-80"></div>
+        <div class="crater w-12 h-6 right-24 top-8"></div>
+        <div class="crater w-32 h-12 right-1/3 top-4 opacity-70"></div>
+    </div>
+
+    <!-- Modals -->
+    <div id="custom-dialog-modal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md hidden p-4">
+        <div
+            class="bg-gradient-to-b from-[#0a1931] to-[#15305b] p-6 md:p-8 rounded-[24px] md:rounded-[32px] border-4 border-yellow-400 max-w-sm w-full text-center shadow-2xl">
+            <div class="text-5xl md:text-6xl mb-3 md:mb-4" id="dialog-icon"></div>
+            <h2 id="dialog-title" class="font-bubble-title text-xl md:text-2xl text-yellow-300 font-bubble-stroke mb-2">
+                KONFIRMASI</h2>
+            <p id="dialog-message" class="text-cyan-200 text-xs md:text-sm mb-5 md:mb-6 leading-relaxed">Apakah Anda
+                yakin ingin mematikan petualangan?</p>
+
+            <div class="flex gap-3 justify-center">
+                <button id="dialog-btn-cancel"
+                    class="px-5 py-2.5 bg-white/10 hover:bg-white/20 border border-white/25 rounded-xl font-semibold text-xs transition-all">
+                    Batal
+                </button>
+                <button id="dialog-btn-confirm"
+                    class="px-6 py-2.5 bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-black font-extrabold rounded-xl shadow-lg text-xs transition-all">
+                    Lanjut
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="level-up-modal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md hidden p-4 overflow-y-auto">
+        <div
+            class="bg-gradient-to-b from-[#0a1931] to-[#15305b] p-6 md:p-8 rounded-[24px] md:rounded-[32px] border-4 border-yellow-400 max-w-md w-full text-center shadow-2xl my-auto">
+            <div class="text-5xl md:text-6xl mb-3 md:mb-4 animate-bounce">🏆</div>
+            <h2 id="modal-title" class="font-bubble-title text-2xl md:text-3xl text-yellow-300 font-bubble-stroke mb-2">
+                MISI BERHASIL!</h2>
+            <p id="modal-message" class="text-cyan-200 text-xs md:text-sm mb-4 md:mb-6">Luar biasa! Kamu telah
+                menaklukkan tantangan sains ini!</p>
+
+            <div class="bg-black/40 rounded-2xl p-3 md:p-4 mb-4 md:mb-6 text-left border border-cyan-500/30">
+                <div class="flex justify-between text-xs md:text-sm py-1">
+                    <span class="text-gray-400">Poin Tambahan:</span>
+                    <span id="modal-score" class="font-bold text-yellow-400">+0 XP</span>
+                </div>
+                <div class="flex justify-between text-xs md:text-sm py-1">
+                    <span class="text-gray-400">Akurasi Jawaban:</span>
+                    <span id="modal-accuracy" class="font-bold text-green-400">100%</span>
+                </div>
+                <div class="flex justify-between text-xs md:text-sm py-1">
+                    <span class="text-gray-400">Pangkat Baru:</span>
+                    <span id="modal-badge" class="font-bold text-pink-400">Space Cadet</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <button id="btn-next-level" onclick="goToNextLevel()"
+                    class="btn-action btn-success w-full text-sm py-2.5">
+                    🚀 Level Berikutnya
+                </button>
+                <button onclick="repeatCurrentLevel()" class="btn-action btn-primary w-full text-sm py-2.5">
+                    🔄 Ulangi Level Ini
+                </button>
+                <button onclick="closeLevelUpModal(); Router.go('home');"
+                    class="btn-action btn-secondary w-full text-sm py-2.5">
+                    🏠 Kembali ke Menu Utama
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="confetti-canvas" class="fixed inset-0 z-40 pointer-events-none hidden"></canvas>
+
+    <!-- Data Scripts -->
+    <script src="js/data/assets.js"></script>
+    <script src="js/data/materi.js"></script>
+    <script src="js/data/quiz.js"></script>
+
+    <!-- Core Scripts -->
+    <script src="js/core/storage.js"></script>
+    <script src="js/core/sound.js"></script>
+    <script src="js/core/dialog.js"></script>
+    <script src="js/core/router.js"></script>
+
+    <!-- Pages Templates -->
+    <script src="js/pages/pages.js"></script>
+    <script src="js/pages/materi-page.js"></script>
+
+    <!-- Game Levels -->
+    <script src="js/levels/level1.js"></script>
+    <script src="js/levels/level2.js"></script>
+    <script src="js/levels/level3.js"></script>
+    <script src="js/levels/level4.js"></script>
+    <script src="js/levels/level5.js"></script>
+
+    <!-- Main Entry Point -->
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>

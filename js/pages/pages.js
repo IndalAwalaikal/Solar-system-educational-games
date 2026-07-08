@@ -1,0 +1,284 @@
+/* ===================================================
+   pages.js — Template HTML Dinamis untuk Setiap Halaman
+   =================================================== */
+
+const Pages = {
+    splash() {
+        return `
+        <div class="flex flex-col items-center justify-center text-center py-4 px-4 max-w-lg mx-auto">
+            <div class="mb-3 float-anim">
+                <img src="${ASSETS.astronautSplash}" alt="Astronaut" class="w-28 h-28 md:w-40 md:h-40 rounded-full object-cover border-4 border-cyan-400 shadow-2xl" onerror="this.src='${ASSETS.placeholder}'">
+            </div>
+            <p class="text-[10px] md:text-xs uppercase tracking-widest text-cyan-300 font-bold mb-1">Edisi Eksplorasi Digital</p>
+            <h2 class="font-bubble-title text-2xl md:text-5xl text-yellow-300 font-bubble-stroke uppercase leading-tight mb-4 md:mb-6">
+                MENGENAL<br/><span class="text-white">TATA SURYA</span>
+            </h2>
+            
+            <div class="bg-black/50 border border-cyan-500/30 p-4 md:p-6 rounded-[24px] md:rounded-[28px] w-full backdrop-blur-md">
+                <label class="block text-left text-xs font-semibold tracking-wider text-cyan-300 mb-2">Nama Kosmonot Anda:</label>
+                <input id="input-player-name" type="text" placeholder="Masukkan nama panggilan..." 
+                    value="${GameState.playerName}"
+                    class="w-full bg-[#0a1931]/80 border-2 border-cyan-400 rounded-xl px-4 py-3 text-center text-yellow-300 font-bold tracking-wider focus:outline-none focus:ring-4 focus:ring-cyan-500/30 transition-all mb-3 md:mb-4">
+                
+                <button onclick="savePlayerNameAndStart()" class="w-full py-3 md:py-4 bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-black font-extrabold uppercase tracking-wider rounded-2xl shadow-lg border-b-4 border-amber-700 active:transform active:scale-95 transition-all">
+                    Mulai Eksplorasi 🚀
+                </button>
+            </div>
+        </div>
+        `;
+    },
+
+    home() {
+        return `
+        <div class="flex flex-col items-center justify-center text-center py-2 md:py-4">
+            <h2 class="font-bubble-title text-3xl md:text-6xl text-yellow-300 font-bubble-stroke uppercase mb-6 md:mb-10 leading-none">
+                MENGENAL<br/><span class="text-white text-2xl md:text-5xl">TATA SURYA</span>
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 w-full max-w-4xl px-4 z-10">
+                
+                <div onclick="Router.go('materi')" class="card-menu-cyan p-4 md:p-6 flex flex-row md:flex-col items-center justify-start md:justify-between gap-4 md:gap-0 min-h-[90px] md:min-h-[280px] cursor-pointer">
+                    <div class="w-16 h-16 md:w-32 md:h-32 flex items-center justify-center float-anim shrink-0">
+                        <img src="${ASSETS.astronautMateri}" alt="Astronaut Reading" class="w-12 h-12 md:w-28 md:h-28 rounded-full object-cover border-2 md:border-4 border-white shadow-xl" onerror="this.src='${ASSETS.placeholder}'">
+                    </div>
+                    <span class="font-bubble-title text-xl md:text-2xl tracking-wider text-white font-bubble-stroke">MATERI</span>
+                </div>
+
+                <div onclick="openGameSelector()" class="card-menu-cyan p-4 md:p-6 flex flex-row md:flex-col items-center justify-start md:justify-between gap-4 md:gap-0 min-h-[90px] md:min-h-[280px] cursor-pointer">
+                    <div class="w-16 h-16 md:w-32 md:h-32 flex items-center justify-center float-anim shrink-0" style="animation-delay: 0.5s;">
+                        <img src="${ASSETS.astronautGame}" alt="Astronaut Gaming" class="w-12 h-12 md:w-28 md:h-28 rounded-full object-cover border-2 md:border-4 border-white shadow-xl" onerror="this.src='${ASSETS.placeholder}'">
+                    </div>
+                    <span class="font-bubble-title text-xl md:text-2xl tracking-wider text-white font-bubble-stroke">GAME</span>
+                </div>
+
+                <div onclick="openQuizSelector()" class="card-menu-cyan p-4 md:p-6 flex flex-row md:flex-col items-center justify-start md:justify-between gap-4 md:gap-0 min-h-[90px] md:min-h-[280px] cursor-pointer">
+                    <div class="w-16 h-16 md:w-32 md:h-32 flex items-center justify-center float-anim shrink-0" style="animation-delay: 1s;">
+                        <img src="${ASSETS.astronautQuiz}" alt="Astronaut Quiz" class="w-12 h-12 md:w-28 md:h-28 rounded-full object-cover border-2 md:border-4 border-white shadow-xl" onerror="this.src='${ASSETS.placeholder}'">
+                    </div>
+                    <span class="font-bubble-title text-xl md:text-2xl tracking-wider text-white font-bubble-stroke">KUIS</span>
+                </div>
+
+            </div>
+        </div>
+        `;
+    },
+
+    materi() {
+        return `
+        <div class="bg-black/40 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6 backdrop-blur-md">
+            <div class="flex flex-wrap items-center justify-between gap-4 border-b border-cyan-500/20 pb-4 mb-4 md:mb-6">
+                <h2 class="font-bubble-title text-xl md:text-2xl text-cyan-300">Ensiklopedia Tata Surya</h2>
+                <button onclick="Router.go('home')" class="px-4 py-1.5 md:px-5 md:py-2 bg-white/5 hover:bg-white/10 rounded-full text-xs font-bold transition-all border border-white/10">Kembali</button>
+            </div>
+
+            <div class="flex flex-col md:grid md:grid-cols-12 gap-4 md:gap-6">
+                <div class="md:col-span-4 flex flex-row md:flex-col gap-1.5 overflow-x-auto md:overflow-y-auto md:max-h-[600px] pr-2 pb-2 md:pb-0 shrink-0" id="materi-menu-list"></div>
+                <div class="md:col-span-8 bg-[#0a1931]/80 border border-cyan-500/20 rounded-xl md:rounded-2xl p-4 md:p-6" id="materi-content-display"></div>
+            </div>
+        </div>
+        `;
+    },
+
+    level1() {
+        return `
+        <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-cyan-500/20 pb-3 mb-4">
+                <div>
+                    <span class="text-xs font-bold text-yellow-400">MISI LEVEL 1</span>
+                    <h2 class="font-bubble-title text-xl md:text-2xl text-white">URUTAN ORBIT PLANET</h2>
+                </div>
+                <div class="text-xs md:text-sm font-bold bg-red-500/20 border border-red-500/40 px-3 py-1.5 rounded-full text-red-300">
+                    ❤️ NYAWA: <span id="l1-lives" class="font-bubble-title text-base md:text-lg">3</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <div class="flex flex-row items-center justify-between gap-3 bg-white/5 p-3 md:p-4 rounded-2xl">
+                    <p class="text-xs text-gray-300 leading-relaxed flex-1">Klik planet yang mengorbit sesuai urutan dari Matahari!</p>
+                    <div class="bg-cyan-500/10 border border-cyan-400/30 p-3 rounded-xl text-center shrink-0">
+                        <span class="text-[10px] uppercase text-cyan-300 font-bold block mb-0.5">Target:</span>
+                        <span id="l1-target-text" class="font-bubble-title text-lg text-yellow-300 animate-pulse">-</span>
+                    </div>
+                </div>
+
+                <div class="flex justify-center items-center relative bg-[#051329] rounded-2xl border border-cyan-500/20 overflow-hidden" id="l1-orbit-container" style="height: min(430px, 65vw)">
+                    <div class="absolute w-10 h-10 md:w-12 md:h-12 rounded-full glow-sun z-20 flex items-center justify-center text-lg md:text-xl" style="top: 50%; left: 50%; transform: translate(-50%, -50%);">☀️</div>
+                </div>
+            </div>
+        </div>
+        `;
+    },
+
+    level2() {
+        return `
+        <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-cyan-500/20 pb-3 mb-4">
+                <div>
+                    <span class="text-xs font-bold text-yellow-400">MISI LEVEL 2</span>
+                    <h2 class="font-bubble-title text-xl md:text-2xl text-white">COCOKKAN PLANET</h2>
+                </div>
+                <button onclick="Router.go('home')" class="px-4 py-1.5 bg-white/5 rounded-full text-xs font-bold border border-white/10">Kembali</button>
+            </div>
+
+            <p class="text-xs text-cyan-300 mb-4 bg-cyan-500/10 p-3 rounded-xl">Klik nama planet, lalu klik gambar planet yang sesuai!</p>
+
+            <div class="flex flex-col md:grid md:grid-cols-12 gap-4">
+                <div class="md:col-span-4 bg-[#0a1931]/60 p-3 rounded-2xl grid grid-cols-2 md:flex md:flex-col gap-2" id="l2-names-source"></div>
+                <div class="md:col-span-8 bg-[#0a1931]/60 p-3 rounded-2xl grid grid-cols-4 gap-3" id="l2-slots-target"></div>
+            </div>
+
+            <div class="mt-4 flex justify-end">
+                <button onclick="Level2.checkAnswers()" class="px-5 py-2.5 bg-gradient-to-r from-yellow-400 to-amber-500 text-black font-extrabold rounded-2xl transition-all shadow-lg active:scale-95 text-sm">Validasi Jawaban ➔</button>
+            </div>
+        </div>
+        `;
+    },
+
+    level3() {
+        return `
+        <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6 max-w-2xl mx-auto">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-cyan-500/20 pb-3 mb-4">
+                <h2 class="font-bubble-title text-xl md:text-2xl text-white">BENAR ATAU SALAH</h2>
+                <span class="text-xs font-bold bg-cyan-500/20 px-3 py-1.5 rounded-full text-cyan-300" id="l3-progress">1 / 15</span>
+            </div>
+
+            <div class="w-full bg-white/5 h-2 rounded-full mb-4 overflow-hidden">
+                <div id="l3-progress-bar" class="bg-cyan-400 h-2 transition-all" style="width: 10%"></div>
+            </div>
+
+            <div class="bg-cyan-950/20 border border-cyan-500/30 p-5 md:p-8 rounded-2xl text-center" id="l3-card-box">
+                <p id="l3-statement" class="text-sm md:text-lg font-semibold leading-relaxed mb-5"></p>
+                <div class="grid grid-cols-2 gap-3 md:gap-4 max-w-sm mx-auto">
+                    <button onclick="Level3.answer(true)" class="py-3 md:py-4 bg-green-500 hover:bg-green-400 text-black font-extrabold rounded-2xl active:scale-95 transition-all text-sm">✔ BENAR</button>
+                    <button onclick="Level3.answer(false)" class="py-3 md:py-4 bg-red-500 hover:bg-red-400 text-white font-extrabold rounded-2xl active:scale-95 transition-all text-sm">✘ SALAH</button>
+                </div>
+            </div>
+
+            <div id="l3-feedback" class="mt-3 bg-[#0a1931] border border-cyan-500/20 rounded-xl p-4 hidden"></div>
+        </div>
+        `;
+    },
+
+    level4() {
+        return `
+        <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6 max-w-2xl mx-auto">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-cyan-500/20 pb-3 mb-4">
+                <h2 class="font-bubble-title text-xl md:text-2xl text-white">QUIZ ADVENTURE</h2>
+                <span class="text-xs font-bold bg-cyan-500/20 px-3 py-1.5 rounded-full text-cyan-300" id="l4-count">1 / 10</span>
+            </div>
+
+            <div class="w-full bg-white/5 h-2 rounded-full mb-4 overflow-hidden">
+                <div id="l4-progress-bar" class="bg-cyan-400 h-2 transition-all" style="width: 20%"></div>
+            </div>
+
+            <div class="bg-cyan-950/20 border border-cyan-500/30 p-4 md:p-6 rounded-2xl mb-4">
+                <div class="w-full flex justify-center mb-3">
+                    <img id="l4-question-img" src="" alt="Ilustrasi Soal" class="rounded-xl border-2 border-cyan-400 max-h-32 md:max-h-40 object-cover shadow-lg hidden game-image">
+                </div>
+                <h3 id="l4-question" class="text-sm md:text-base font-bold mb-4"></h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3" id="l4-options-container"></div>
+            </div>
+
+            <div id="l4-feedback" class="bg-[#0a1931] border border-cyan-500/30 rounded-2xl p-4 hidden">
+                <h4 class="font-bold text-yellow-300 mb-1" id="l4-feedback-title"></h4>
+                <p id="l4-feedback-text" class="text-xs text-gray-300 mb-3"></p>
+                <button onclick="Level4.nextQuestion()" class="px-4 py-2 bg-cyan-400 text-black font-bold rounded-lg text-xs">Lanjut ▶</button>
+            </div>
+        </div>
+        `;
+    },
+
+    level5() {
+        return `
+        <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6">
+            <div class="flex items-center justify-between gap-3 border-b border-cyan-500/20 pb-3 mb-4">
+                <h2 class="font-bubble-title text-xl md:text-2xl text-white">MISSION SPACE</h2>
+                <span class="text-xs md:text-sm font-bold bg-cyan-500/20 px-3 md:px-4 py-1.5 rounded-full text-yellow-300" id="l5-star-count">⭐ 0 / 5</span>
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <div class="relative">
+                    <canvas id="l5-game-canvas" class="w-full bg-[#051329] rounded-2xl border border-cyan-500/20 block" style="aspect-ratio: 4/3; max-height: 55vh;" width="600" height="450"></canvas>
+                    
+                    <div id="l5-question-overlay" class="absolute inset-0 bg-black/95 backdrop-blur-sm rounded-2xl flex items-center justify-center p-3 md:p-6 hidden">
+                        <div class="bg-gradient-to-b from-[#0a1931] to-[#15305b] border-2 border-cyan-400 p-4 md:p-6 rounded-2xl w-full max-w-md text-center shadow-2xl">
+                            <span class="text-xl md:text-2xl mb-2 block">✨ TANTANGAN BINTANG ✨</span>
+                            <h4 id="l5-question" class="text-xs md:text-sm font-bold mb-3"></h4>
+                            <div class="flex flex-col gap-2 mb-3" id="l5-options"></div>
+                            <p id="l5-feedback" class="text-xs font-semibold hidden"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                    <p class="text-xs text-gray-400 leading-relaxed flex-1">Gunakan tombol atau keyboard ◀ ▶ untuk gerak pesawat. Tangkap bintang untuk kuis!</p>
+                    <div class="grid grid-cols-2 gap-2 w-full sm:w-auto shrink-0">
+                        <button id="btn-move-left" class="py-3 px-6 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-xl font-bold border border-cyan-400/40 text-sm">◀ KIRI</button>
+                        <button id="btn-move-right" class="py-3 px-6 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-xl font-bold border border-cyan-400/40 text-sm">KANAN ▶</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+    },
+
+    score() {
+        const history = GameState.history;
+        return `
+        <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6 max-w-2xl mx-auto">
+            <h2 class="font-bubble-title text-xl md:text-2xl text-cyan-300 mb-4 md:mb-6">Papan Prestasi</h2>
+            <div class="grid grid-cols-3 gap-2 md:gap-4 mb-6">
+                <div class="bg-white/5 p-3 md:p-4 rounded-xl text-center">
+                    <span class="text-[9px] md:text-[10px] text-gray-400 uppercase block mb-1">Skor</span>
+                    <span class="font-bubble-title text-base md:text-xl text-yellow-300">${GameState.score} XP</span>
+                </div>
+                <div class="bg-white/5 p-3 md:p-4 rounded-xl text-center">
+                    <span class="text-[9px] md:text-[10px] text-gray-400 uppercase block mb-1">Misi</span>
+                    <span class="font-bubble-title text-base md:text-xl text-green-400">${GameState.progress.levelsCompleted.length} / 5</span>
+                </div>
+                <div class="bg-white/5 p-3 md:p-4 rounded-xl text-center">
+                    <span class="text-[9px] md:text-[10px] text-gray-400 uppercase block mb-1">Lencana</span>
+                    <span class="text-[10px] md:text-xs font-bold block mt-1">${GameState.calculateBadge().split(' ').slice(1).join(' ')}</span>
+                </div>
+            </div>
+
+            <h3 class="font-bold text-xs md:text-sm text-cyan-300 mb-3">Aktivitas Misi Terakhir</h3>
+            <div class="space-y-2 max-h-48 md:max-h-52 overflow-y-auto pr-2">
+                ${history.length === 0 ? `<p class="text-xs text-gray-400 text-center py-4">Belum ada aktivitas yang tercatat.</p>` : history.map(item => `
+                <div class="bg-white/5 p-2.5 md:p-3 rounded-xl flex items-center justify-between text-xs">
+                    <div>
+                        <p class="font-bold">Misi Level ${item.level}</p>
+                        <span class="text-[10px] text-gray-500">${item.date}</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="font-bold text-yellow-300">+${item.score} XP</span>
+                        <p class="text-[9px] text-gray-400">Akurasi: ${item.accuracy}%</p>
+                    </div>
+                </div>
+                `).join('')}
+            </div>
+        </div>
+        `;
+    },
+
+    about() {
+        return `
+        <div class="bg-black/50 border border-cyan-500/20 rounded-[32px] p-6 max-w-xl mx-auto">
+            <h2 class="font-bubble-title text-2xl text-cyan-300 mb-6">Tentang & Bantuan</h2>
+            <div class="space-y-4 text-xs md:text-sm text-gray-300 leading-relaxed">
+                <p><strong>Kosmos Petualang</strong> adalah platform edukasi interaktif yang dirancang khusus untuk mempermudah siswa SMP Kelas VII dalam mengeksplorasi ilmu sains Tata Surya dengan seru!</p>
+                <div class="bg-[#0a1931] border border-cyan-500/30 p-4 rounded-xl space-y-2">
+                    <h4 class="font-bold text-white text-xs">CARA BERMAIN:</h4>
+                    <ul class="list-disc pl-5 space-y-1 text-[11px]">
+                        <li><strong>Materi:</strong> Baca materi sains lengkap dengan sub-bab detail untuk memahami teori-teori planet.</li>
+                        <li><strong>Game (Level 1 & 2):</strong> Urutkan dan cocokkan planet visual kustom.</li>
+                        <li><strong>Kuis (Level 3 & 4):</strong> Jawab kuis benar salah dan pilihan ganda.</li>
+                        <li><strong>Mission Space (Level 5):</strong> Terbang tangkap bintang di luar angkasa!</li>
+                    </ul>
+                </div>
+                <p class="text-[11px] text-gray-500 text-center border-t border-white/5 pt-4">Versi 7.0 (Enhanced with Real Images & Complete Content) | Dikembangkan untuk IPA Kurikulum Merdeka.</p>
+            </div>
+        </div>
+        `;
+    }
+};

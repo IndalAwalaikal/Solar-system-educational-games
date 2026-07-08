@@ -19,6 +19,18 @@ const SoundManager = {
         this.updateUI();
         if (this.enabled) {
             this.startBGM();
+            // Setup listener untuk interaksi pertama jika autoplay diblokir browser
+            const playOnGesture = () => {
+                if (this.enabled) {
+                    this.startBGM();
+                }
+                window.removeEventListener('click', playOnGesture);
+                window.removeEventListener('touchstart', playOnGesture);
+                window.removeEventListener('keydown', playOnGesture);
+            };
+            window.addEventListener('click', playOnGesture);
+            window.addEventListener('touchstart', playOnGesture);
+            window.addEventListener('keydown', playOnGesture);
         }
     },
 

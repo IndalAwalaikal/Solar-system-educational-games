@@ -164,6 +164,7 @@ function savePlayerNameAndStart() {
     }
     GameState.playerName = name;
     GameState.save();
+    SoundManager.startBGM(); // Aktifkan musik secara paksa setelah interaksi tombol
     Router.go('home');
 }
 

@@ -122,5 +122,6 @@ window.onload = function() {
     };
 
     GameState.updateGlobalHeader();
+    SoundManager.init(); // Siapkan dan coba jalankan BGM
     Router.go('splash');
 };

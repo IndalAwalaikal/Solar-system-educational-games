@@ -3,8 +3,8 @@
    =================================================== */
 
 const Pages = {
-    splash() {
-        return `
+  splash() {
+    return `
         <div class="flex flex-col items-center justify-center text-center py-4 px-4 max-w-lg mx-auto">
             <div class="mb-3 float-anim">
                 <img src="${ASSETS.astronautSplash}" alt="Astronaut" class="w-28 h-28 md:w-40 md:h-40 rounded-full object-cover border-4 border-cyan-400 shadow-2xl" onerror="this.src='${ASSETS.placeholder}'">
@@ -18,6 +18,7 @@ const Pages = {
                 <label class="block text-left text-xs font-semibold tracking-wider text-cyan-300 mb-2">Nama Kosmonot Anda:</label>
                 <input id="input-player-name" type="text" placeholder="Masukkan nama panggilan..." 
                     value="${GameState.playerName}"
+                    autofocus
                     class="w-full bg-[#0a1931]/80 border-2 border-cyan-400 rounded-xl px-4 py-3 text-center text-yellow-300 font-bold tracking-wider focus:outline-none focus:ring-4 focus:ring-cyan-500/30 transition-all mb-3 md:mb-4">
                 
                 <button onclick="savePlayerNameAndStart()" class="w-full py-3 md:py-4 bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-black font-extrabold uppercase tracking-wider rounded-2xl shadow-lg border-b-4 border-amber-700 active:transform active:scale-95 transition-all">
@@ -26,10 +27,10 @@ const Pages = {
             </div>
         </div>
         `;
-    },
+  },
 
-    home() {
-        return `
+  home() {
+    return `
         <div class="flex flex-col items-center justify-center text-center py-2 md:py-4">
             <h2 class="font-bubble-title text-3xl md:text-6xl text-yellow-300 font-bubble-stroke uppercase mb-6 md:mb-10 leading-none">
                 MENGENAL<br/><span class="text-white text-2xl md:text-5xl">TATA SURYA</span>
@@ -70,10 +71,10 @@ const Pages = {
             </div>
         </div>
         `;
-    },
+  },
 
-    materi() {
-        return `
+  materi() {
+    return `
         <div class="bg-black/40 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6 backdrop-blur-md">
             <div class="flex flex-wrap items-center justify-between gap-4 border-b border-cyan-500/20 pb-4 mb-4 md:mb-6">
                 <h2 class="font-bubble-title text-xl md:text-2xl text-cyan-300">Ensiklopedia Tata Surya</h2>
@@ -86,10 +87,10 @@ const Pages = {
             </div>
         </div>
         `;
-    },
+  },
 
-    level1() {
-        return `
+  level1() {
+    return `
         <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6">
             <div class="flex flex-wrap items-center justify-between gap-2 border-b border-cyan-500/20 pb-3 mb-4">
                 <div>
@@ -116,10 +117,10 @@ const Pages = {
             </div>
         </div>
         `;
-    },
+  },
 
-    level2() {
-        return `
+  level2() {
+    return `
         <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6">
             <div class="flex flex-wrap items-center justify-between gap-3 border-b border-cyan-500/20 pb-3 mb-4">
                 <div>
@@ -141,10 +142,10 @@ const Pages = {
             </div>
         </div>
         `;
-    },
+  },
 
-    level3() {
-        return `
+  level3() {
+    return `
         <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6 max-w-2xl mx-auto">
             <div class="flex flex-wrap items-center justify-between gap-3 border-b border-cyan-500/20 pb-3 mb-4">
                 <h2 class="font-bubble-title text-xl md:text-2xl text-white">BENAR ATAU SALAH</h2>
@@ -166,10 +167,10 @@ const Pages = {
             <div id="l3-feedback" class="mt-3 bg-[#0a1931] border border-cyan-500/20 rounded-xl p-4 hidden"></div>
         </div>
         `;
-    },
+  },
 
-    level4() {
-        return `
+  level4() {
+    return `
         <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6 max-w-2xl mx-auto">
             <div class="flex flex-wrap items-center justify-between gap-3 border-b border-cyan-500/20 pb-3 mb-4">
                 <h2 class="font-bubble-title text-xl md:text-2xl text-white">QUIZ ADVENTURE</h2>
@@ -195,10 +196,10 @@ const Pages = {
             </div>
         </div>
         `;
-    },
+  },
 
-    level5() {
-        return `
+  level5() {
+    return `
         <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6">
             <div class="flex items-center justify-between gap-3 border-b border-cyan-500/20 pb-3 mb-4">
                 <h2 class="font-bubble-title text-xl md:text-2xl text-white">MISSION SPACE</h2>
@@ -229,11 +230,11 @@ const Pages = {
             </div>
         </div>
         `;
-    },
+  },
 
-    score() {
-        const history = GameState.history;
-        return `
+  score() {
+    const history = GameState.history;
+    return `
         <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6 max-w-2xl mx-auto">
             <h2 class="font-bubble-title text-xl md:text-2xl text-cyan-300 mb-4 md:mb-6">Papan Prestasi</h2>
             <div class="grid grid-cols-3 gap-2 md:gap-4 mb-6">
@@ -247,13 +248,18 @@ const Pages = {
                 </div>
                 <div class="bg-white/5 p-3 md:p-4 rounded-xl text-center">
                     <span class="text-[9px] md:text-[10px] text-gray-400 uppercase block mb-1">Lencana</span>
-                    <span class="text-[10px] md:text-xs font-bold block mt-1">${GameState.calculateBadge().split(' ').slice(1).join(' ')}</span>
+                    <span class="text-[10px] md:text-xs font-bold block mt-1">${GameState.calculateBadge().split(" ").slice(1).join(" ")}</span>
                 </div>
             </div>
 
             <h3 class="font-bold text-xs md:text-sm text-cyan-300 mb-3">Aktivitas Misi Terakhir</h3>
             <div class="space-y-2 max-h-48 md:max-h-52 overflow-y-auto pr-2">
-                ${history.length === 0 ? `<p class="text-xs text-gray-400 text-center py-4">Belum ada aktivitas yang tercatat.</p>` : history.map(item => `
+                ${
+                  history.length === 0
+                    ? `<p class="text-xs text-gray-400 text-center py-4">Belum ada aktivitas yang tercatat.</p>`
+                    : history
+                        .map(
+                          (item) => `
                 <div class="bg-white/5 p-2.5 md:p-3 rounded-xl flex items-center justify-between text-xs">
                     <div>
                         <p class="font-bold">Misi Level ${item.level}</p>
@@ -264,14 +270,17 @@ const Pages = {
                         <p class="text-[9px] text-gray-400">Akurasi: ${item.accuracy}%</p>
                     </div>
                 </div>
-                `).join('')}
+                `,
+                        )
+                        .join("")
+                }
             </div>
         </div>
         `;
-    },
+  },
 
-    about() {
-        return `
+  about() {
+    return `
         <div class="bg-black/50 border border-cyan-500/20 rounded-[32px] p-6 max-w-xl mx-auto">
             <h2 class="font-bubble-title text-2xl text-cyan-300 mb-6">Tentang & Bantuan</h2>
             <div class="space-y-4 text-xs md:text-sm text-gray-300 leading-relaxed">
@@ -288,30 +297,25 @@ const Pages = {
             </div>
         </div>
         `;
-    },
+  },
 
-    ar() {
-        return `
-        <div class="fixed inset-0 z-[100] w-screen h-screen overflow-hidden bg-[#020813] flex flex-col font-sans">
-            <!-- Header HUD -->
-            <div class="w-full bg-black/60 border-b border-cyan-500/20 px-4 py-3 flex items-center justify-between z-20 backdrop-blur-md">
-                <div class="flex items-center gap-3">
-                    <span class="text-xs md:text-sm animate-pulse">🛰️</span>
-                    <div>
-                        <span class="text-[9px] font-bold text-cyan-400 uppercase tracking-widest block">Augmented Reality & 3D</span>
-                        <h2 class="font-bubble-title text-base md:text-xl text-white tracking-wide font-bubble-stroke">3D SOLAR SYSTEM EXPLORER</h2>
-                    </div>
+  ar() {
+    return `
+        <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6 backdrop-blur-md">
+            <div class="flex flex-wrap items-center justify-between gap-4 border-b border-cyan-500/20 pb-4 mb-4 md:mb-6">
+                <div>
+                    <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider block mb-1">Augmented Reality & 3D</span>
+                    <h2 class="font-bubble-title text-xl md:text-2xl text-white font-bubble-stroke">Jelajah AR Tata Surya</h2>
                 </div>
-                <button onclick="ARPage.goBack()" class="px-4 py-1.5 bg-white/5 hover:bg-white/10 text-white rounded-xl text-xs font-bold border border-white/10 transition-all shrink-0">← Menu Utama</button>
+                <button onclick="ARPage.goBack()" class="px-4 py-1.5 md:px-5 md:py-2 bg-white/5 hover:bg-white/10 rounded-full text-xs font-bold transition-all border border-white/10">Kembali</button>
             </div>
 
-            <!-- Main Workspace: split into 3D View and Info panel -->
-            <div class="flex-grow flex flex-col md:flex-row relative z-10 overflow-hidden">
+            <div class="flex flex-col md:grid md:grid-cols-12 gap-4 md:gap-6">
                 <!-- 3D Model Viewer Container -->
-                <div class="flex-grow h-3/5 md:h-full relative bg-radial-gradient">
+                <div class="md:col-span-8 relative bg-[#0a1931]/60 rounded-xl md:rounded-2xl overflow-hidden border border-cyan-500/10 flex items-center justify-center" style="height: 400px; md:height: 500px;">
                     <model-viewer
                         id="solar-system-3d"
-                        src="tata_surya.glb"
+                        src="${MODEL_3D_TATA_SURYA}"
                         ar
                         ar-modes="webxr scene-viewer quick-look"
                         camera-controls
@@ -324,37 +328,35 @@ const Pages = {
                         style="background-color: transparent;">
                         
                         <!-- Custom AR Trigger Button -->
-                        <button slot="ar-button" id="ar-trigger-btn" class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white px-6 py-3 rounded-full font-bold text-xs md:text-sm shadow-[0_0_20px_rgba(6,182,212,0.5)] border border-cyan-300 flex items-center gap-2 active:scale-95 transition-all">
-                            <span>🌌</span> PROYEKSIKAN KE MEJA (AR KAMERA)
+                        <button slot="ar-button" id="ar-trigger-btn" class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-black px-5 py-2.5 rounded-2xl font-bold text-xs md:text-sm shadow-lg border-b-4 border-amber-700 active:scale-95 transition-all">
+                            🌌 AR Kamera
                         </button>
                     </model-viewer>
 
-                    <!-- User Guide HUD Overlay -->
-                    <div class="absolute top-4 left-4 bg-black/60 border border-white/10 backdrop-blur-md rounded-xl p-3 max-w-[220px] pointer-events-none text-[10px] space-y-1 text-gray-300">
-                        <p class="font-bold text-cyan-400">💡 NAVIGASI 3D:</p>
-                        <p>• Seret / Sentuh untuk Memutar Model</p>
-                        <p>• Cubit / Scroll untuk Memperbesar</p>
-                        <p>• Klik Tombol AR untuk menaruh di meja Anda</p>
+                    <!-- User Guide Overlay -->
+                    <div class="absolute top-3 left-3 bg-black/70 border border-cyan-500/30 backdrop-blur-md rounded-lg p-2.5 max-w-[200px] pointer-events-none text-[9px] space-y-0.5 text-gray-300">
+                        <p class="font-bold text-cyan-300 text-[10px]">💡 Kontrol:</p>
+                        <p>Seret: Putar • Cubit: Zoom</p>
                     </div>
                 </div>
 
                 <!-- Info and Planet Selector Panel -->
-                <div class="w-full md:w-[350px] h-2/5 md:h-full bg-black/80 border-t md:border-t-0 md:border-l border-cyan-500/20 flex flex-col backdrop-blur-lg z-10 overflow-hidden">
+                <div class="md:col-span-4 bg-[#0a1931]/80 border border-cyan-500/20 rounded-xl md:rounded-2xl p-4 md:p-6 flex flex-col">
                     <!-- Selector Tabs -->
-                    <div class="p-3 border-b border-cyan-500/10 shrink-0">
-                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-2">Pilih Objek untuk Difokuskan:</span>
-                        <div class="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin" id="planet-selector-scroll">
+                    <div class="mb-4 pb-4 border-b border-cyan-500/10 shrink-0">
+                        <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider block mb-2">Pilih Planet:</span>
+                        <div class="flex flex-wrap gap-1.5" id="planet-selector-scroll">
                             <!-- JS will inject buttons here -->
                         </div>
                     </div>
 
                     <!-- Planet Detail Information -->
-                    <div class="flex-grow p-4 overflow-y-auto space-y-4" id="planet-info-panel">
+                    <div class="flex-grow overflow-y-auto space-y-3 text-xs md:text-sm" id="planet-info-panel">
                         <!-- JS will inject active details here -->
                     </div>
                 </div>
             </div>
         </div>
         `;
-    }
+  },
 };

@@ -427,3 +427,415 @@ body {
     from { transform: rotate(0deg); }
     to   { transform: rotate(360deg); }
 }
+
+/* ===================================================
+   New Immersive AR UI Styles
+   =================================================== */
+
+.ar-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: radial-gradient(ellipse at center, #0a1628 0%, #030612 100%);
+}
+
+.ar-viewport {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+#ar-video-feed {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1);
+}
+
+#ar-camera-fallback {
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, #0a1628, #000000);
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.ar-ui-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.ar-ui-overlay>* {
+    pointer-events: auto;
+}
+
+.ar-hud-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 16px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 20;
+}
+
+.ar-hud-top .ar-back-btn {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    transition: all 0.2s;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.ar-hud-top .ar-back-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+.ar-hud-top .ar-scan-status {
+    color: #94a3b8;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+}
+
+.ar-hud-top .ar-scan-status .pulse-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #00ff88;
+    margin-right: 8px;
+    animation: pulse-dot 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.3;
+        transform: scale(0.7);
+    }
+}
+
+.ar-progress-container {
+    position: absolute;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(320px, 80%);
+    z-index: 20;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(12px);
+    border-radius: 30px;
+    padding: 6px 12px 6px 16px;
+    border: 1px solid rgba(0, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.ar-progress-container .ar-progress-label {
+    color: #94a3b8;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+}
+
+.ar-progress-container .ar-progress-track {
+    flex: 1;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.ar-progress-container .ar-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #00d4ff, #7c3aed, #f472b6);
+    border-radius: 10px;
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ar-progress-container .ar-progress-count {
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    min-width: 32px;
+    text-align: center;
+}
+
+.ar-mini-map {
+    position: absolute;
+    bottom: 140px;
+    right: 12px;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    z-index: 20;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.ar-mini-map .relative {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.ar-mini-map .absolute {
+    position: absolute;
+}
+
+.ar-planet-area {
+    position: absolute;
+    inset: 0;
+    z-index: 15;
+    pointer-events: none;
+}
+
+.ar-planet-area>* {
+    pointer-events: auto;
+}
+
+.ar-planet-appear {
+    animation: planetAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes planetAppear {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.3) rotate(-20deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    }
+}
+
+.ar-particle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    pointer-events: none;
+    z-index: 0;
+}
+
+@keyframes particleFloat {
+    0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0.05;
+    }
+    50% {
+        opacity: 0.3;
+    }
+    100% {
+        transform: translateY(-100vh) translateX(30px);
+        opacity: 0.05;
+    }
+}
+
+.ar-quiz-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    padding: 16px;
+    pointer-events: auto;
+}
+
+.ar-quiz-overlay.hidden {
+    display: none !important;
+}
+
+.ar-quiz-card {
+    background: linear-gradient(145deg, #0f1f3a, #0a1628);
+    border: 2px solid rgba(0, 200, 255, 0.3);
+    border-radius: 28px;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 80px rgba(0, 200, 255, 0.05);
+    overflow: hidden;
+    animation: quizSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes quizSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.ar-quiz-header {
+    padding: 16px 20px;
+    background: linear-gradient(135deg, rgba(0, 200, 255, 0.2), rgba(100, 0, 255, 0.15));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.ar-quiz-header img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(0, 200, 255, 0.4);
+}
+
+.ar-quiz-header h3 {
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.ar-quiz-header .badge {
+    font-size: 9px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.ar-quiz-body {
+    padding: 20px 24px 24px;
+}
+
+.ar-quiz-body .question {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+.ar-quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ar-quiz-options button {
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 13px;
+    font-weight: 500;
+    text-align: left;
+    transition: all 0.2s;
+    cursor: pointer;
+    width: 100%;
+}
+
+.ar-quiz-options button:hover {
+    background: rgba(0, 200, 255, 0.1);
+    border-color: rgba(0, 200, 255, 0.3);
+    transform: scale(1.01);
+}
+
+.ar-quiz-options button .letter {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    background: rgba(0, 200, 255, 0.1);
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    color: #00d4ff;
+    margin-right: 10px;
+}
+
+.ar-result-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ar-result-btn:hover {
+    transform: scale(1.02);
+}
+
+@media (max-width: 480px) {
+    .ar-mini-map {
+        width: 60px;
+        height: 60px;
+        bottom: 120px;
+        right: 8px;
+    }
+    .ar-progress-container {
+        bottom: 70px;
+        padding: 4px 10px 4px 12px;
+        width: min(280px, 85%);
+    }
+    .ar-progress-container .ar-progress-label {
+        font-size: 8px;
+    }
+    .ar-hud-top {
+        padding: 8px 12px;
+    }
+    .ar-hud-top .ar-scan-status {
+        font-size: 8px;
+        padding: 4px 10px;
+    }
+    .ar-quiz-card {
+        border-radius: 20px;
+    }
+    .ar-quiz-body {
+        padding: 16px 18px 20px;
+    }
+    .ar-quiz-body .question {
+        font-size: 13px;
+    }
+    .ar-quiz-options button {
+        padding: 10px 14px;
+        font-size: 12px;
+    }
+}

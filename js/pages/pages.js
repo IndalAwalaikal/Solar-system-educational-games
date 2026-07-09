@@ -292,70 +292,69 @@ const Pages = {
 
     ar() {
         return `
-        <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6 max-w-3xl mx-auto relative">
-            <!-- Header -->
-            <div class="flex items-center justify-between gap-3 border-b border-cyan-500/20 pb-3 mb-3">
-                <div>
-                    <span class="text-[10px] font-bold text-yellow-400 uppercase tracking-wider">Misi Penjelajah Antariksa</span>
-                    <h2 class="font-bubble-title text-lg md:text-2xl text-white">JELAJAH AR</h2>
+        <div class="fixed inset-0 z-[100] w-screen h-screen overflow-hidden bg-[#020813] flex flex-col font-sans">
+            <!-- Header HUD -->
+            <div class="w-full bg-black/60 border-b border-cyan-500/20 px-4 py-3 flex items-center justify-between z-20 backdrop-blur-md">
+                <div class="flex items-center gap-3">
+                    <span class="text-xs md:text-sm animate-pulse">🛰️</span>
+                    <div>
+                        <span class="text-[9px] font-bold text-cyan-400 uppercase tracking-widest block">Augmented Reality & 3D</span>
+                        <h2 class="font-bubble-title text-base md:text-xl text-white tracking-wide font-bubble-stroke">3D SOLAR SYSTEM EXPLORER</h2>
+                    </div>
                 </div>
-                <button onclick="ARPage.stopCamera(); Router.go('home')" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-full text-xs font-bold border border-white/10 transition-all shrink-0">← Kembali</button>
+                <button onclick="ARPage.goBack()" class="px-4 py-1.5 bg-white/5 hover:bg-white/10 text-white rounded-xl text-xs font-bold border border-white/10 transition-all shrink-0">← Menu Utama</button>
             </div>
 
-            <!-- Progress Bar -->
-            <div class="mb-3">
-                <div class="flex justify-between items-center text-[10px] mb-1">
-                    <span class="text-gray-400 font-semibold uppercase tracking-wider">Planet Teridentifikasi</span>
-                    <span id="ar-planet-count" class="text-cyan-300 font-bold">0 / 8</span>
+            <!-- Main Workspace: split into 3D View and Info panel -->
+            <div class="flex-grow flex flex-col md:flex-row relative z-10 overflow-hidden">
+                <!-- 3D Model Viewer Container -->
+                <div class="flex-grow h-3/5 md:h-full relative bg-radial-gradient">
+                    <model-viewer
+                        id="solar-system-3d"
+                        src="tata_surya.glb"
+                        ar
+                        ar-modes="webxr scene-viewer quick-look"
+                        camera-controls
+                        auto-rotate
+                        rotation-intensity="0.5"
+                        shadow-intensity="1.5"
+                        interaction-prompt="auto"
+                        alt="3D Solar System Model"
+                        class="w-full h-full"
+                        style="background-color: transparent;">
+                        
+                        <!-- Custom AR Trigger Button -->
+                        <button slot="ar-button" id="ar-trigger-btn" class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white px-6 py-3 rounded-full font-bold text-xs md:text-sm shadow-[0_0_20px_rgba(6,182,212,0.5)] border border-cyan-300 flex items-center gap-2 active:scale-95 transition-all">
+                            <span>🌌</span> PROYEKSIKAN KE MEJA (AR KAMERA)
+                        </button>
+                    </model-viewer>
+
+                    <!-- User Guide HUD Overlay -->
+                    <div class="absolute top-4 left-4 bg-black/60 border border-white/10 backdrop-blur-md rounded-xl p-3 max-w-[220px] pointer-events-none text-[10px] space-y-1 text-gray-300">
+                        <p class="font-bold text-cyan-400">💡 NAVIGASI 3D:</p>
+                        <p>• Seret / Sentuh untuk Memutar Model</p>
+                        <p>• Cubit / Scroll untuk Memperbesar</p>
+                        <p>• Klik Tombol AR untuk menaruh di meja Anda</p>
+                    </div>
                 </div>
-                <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden">
-                    <div id="ar-progress-fill" class="h-full bg-gradient-to-r from-cyan-500 to-green-400 rounded-full transition-all duration-500" style="width: 0%"></div>
+
+                <!-- Info and Planet Selector Panel -->
+                <div class="w-full md:w-[350px] h-2/5 md:h-full bg-black/80 border-t md:border-t-0 md:border-l border-cyan-500/20 flex flex-col backdrop-blur-lg z-10 overflow-hidden">
+                    <!-- Selector Tabs -->
+                    <div class="p-3 border-b border-cyan-500/10 shrink-0">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-2">Pilih Objek untuk Difokuskan:</span>
+                        <div class="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin" id="planet-selector-scroll">
+                            <!-- JS will inject buttons here -->
+                        </div>
+                    </div>
+
+                    <!-- Planet Detail Information -->
+                    <div class="flex-grow p-4 overflow-y-auto space-y-4" id="planet-info-panel">
+                        <!-- JS will inject active details here -->
+                    </div>
                 </div>
-            </div>
-
-            <!-- Main AR Camera View -->
-            <div class="relative w-full aspect-[4/3] md:aspect-video bg-black rounded-2xl border border-cyan-500/20 overflow-hidden mb-3" id="ar-camera-container">
-                <!-- Video feed -->
-                <video id="ar-video-feed" class="absolute inset-0 w-full h-full object-cover z-0" autoplay playsinline muted></video>
-
-                <!-- Fallback (animated starfield ketika kamera tidak tersedia) -->
-                <div id="ar-camera-fallback" class="absolute inset-0 z-0 bg-[#050d1a]"></div>
-
-                <!-- Scan line overlay effect -->
-                <div class="absolute inset-0 z-[5] pointer-events-none ar-scanline"></div>
-
-                <!-- Planet spawn overlay -->
-                <div id="ar-overlay-area" class="absolute inset-0 z-10 pointer-events-none"></div>
-
-                <!-- Corner brackets HUD -->
-                <div class="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-cyan-400/50 rounded-tl-lg z-20 pointer-events-none"></div>
-                <div class="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-cyan-400/50 rounded-tr-lg z-20 pointer-events-none"></div>
-                <div class="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-cyan-400/50 rounded-bl-lg z-20 pointer-events-none"></div>
-                <div class="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-cyan-400/50 rounded-br-lg z-20 pointer-events-none"></div>
-
-                <!-- Crosshair center -->
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 z-20 pointer-events-none opacity-30">
-                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-px h-3 bg-cyan-400"></div>
-                    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-px h-3 bg-cyan-400"></div>
-                    <div class="absolute left-0 top-1/2 -translate-y-1/2 h-px w-3 bg-cyan-400"></div>
-                    <div class="absolute right-0 top-1/2 -translate-y-1/2 h-px w-3 bg-cyan-400"></div>
-                </div>
-            </div>
-
-            <!-- Mission Status Bar -->
-            <div id="ar-mission-status" class="text-[11px] text-gray-300 bg-black/40 border border-cyan-500/20 rounded-xl px-3 py-2 mb-3 flex items-center gap-2">
-                <span class="text-cyan-300">🔭</span> Menginisialisasi radar pemindai planet...
-            </div>
-
-            <!-- Mini Solar System Map -->
-            <div class="bg-black/40 border border-cyan-500/20 rounded-xl p-3">
-                <p class="text-[10px] text-gray-500 uppercase font-bold tracking-wider mb-2 text-center">Peta Tata Surya — Planet yang Ditangkap</p>
-                <div id="ar-mini-solarsystem" class="w-full h-24 md:h-32 relative overflow-hidden rounded-lg bg-[#050d1a]"></div>
             </div>
         </div>
-
-        <!-- Quiz Overlay (fullscreen modal, hidden by default) -->
-        <div id="ar-quiz-overlay" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden overflow-y-auto"></div>
         `;
     }
 };

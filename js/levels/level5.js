@@ -13,6 +13,10 @@ const Level5 = {
     questions: [],
     currentStarQuestion: null,
     startTime: null,
+    answerAttempts: 0,
+    keyDownHandler: null,
+    keyUpHandler: null,
+    stopMoveHandler: null,
 
     init() {
         this.canvas = document.getElementById('l5-game-canvas');
@@ -22,6 +26,8 @@ const Level5 = {
         this.gameActive = true;
         this.questions = [...DATABASE_QUIZ].sort(() => Math.random() - 0.5);
         this.startTime = new Date();
+        this.answerAttempts = 0;
+        this.keys = {};
 
         // Pastikan canvas internal selalu 600x450 (koordinat game)
         // Display size dikontrol CSS (responsive), tapi drawing space tetap
@@ -34,13 +40,21 @@ const Level5 = {
 
         this.updateUI();
 
-        window.addEventListener('keydown', (e) => this.keys[e.key] = true);
-        window.addEventListener('keyup', (e) => this.keys[e.key] = false);
+        if (this.keyDownHandler) window.removeEventListener('keydown', this.keyDownHandler);
+        if (this.keyUpHandler) window.removeEventListener('keyup', this.keyUpHandler);
+        this.keyDownHandler = (e) => this.keys[e.key] = true;
+        this.keyUpHandler = (e) => this.keys[e.key] = false;
+        window.addEventListener('keydown', this.keyDownHandler);
+        window.addEventListener('keyup', this.keyUpHandler);
 
         const btnLeft = document.getElementById('btn-move-left');
         const btnRight = document.getElementById('btn-move-right');
         
         let touchMoveInterval = null;
+        if (this.stopMoveHandler) {
+            window.removeEventListener('mouseup', this.stopMoveHandler);
+            window.removeEventListener('touchend', this.stopMoveHandler);
+        }
         btnLeft.onmousedown = btnLeft.ontouchstart = (e) => {
             e.preventDefault();
             if(touchMoveInterval) clearInterval(touchMoveInterval);
@@ -54,8 +68,27 @@ const Level5 = {
         btnLeft.onmouseup = btnLeft.ontouchend = btnRight.onmouseup = btnRight.ontouchend = () => {
             clearInterval(touchMoveInterval);
         };
+        this.stopMoveHandler = () => {
+            clearInterval(touchMoveInterval);
+        };
+        window.addEventListener('mouseup', this.stopMoveHandler);
+        window.addEventListener('touchend', this.stopMoveHandler);
 
         this.loop();
+    },
+
+    cleanup() {
+        this.gameActive = false;
+        if (this.keyDownHandler) window.removeEventListener('keydown', this.keyDownHandler);
+        if (this.keyUpHandler) window.removeEventListener('keyup', this.keyUpHandler);
+        if (this.stopMoveHandler) {
+            window.removeEventListener('mouseup', this.stopMoveHandler);
+            window.removeEventListener('touchend', this.stopMoveHandler);
+        }
+        this.keyDownHandler = null;
+        this.keyUpHandler = null;
+        this.stopMoveHandler = null;
+        this.keys = {};
     },
 
     updateUI() {
@@ -154,10 +187,21 @@ const Level5 = {
         const qText = document.getElementById('l5-question');
         const optionsBox = document.getElementById('l5-options');
         const fbText = document.getElementById('l5-feedback');
+        const imgEl = document.getElementById('l5-question-img');
 
         qText.innerText = this.currentStarQuestion.question;
         fbText.classList.add('hidden');
         optionsBox.innerHTML = '';
+
+        // Tampilkan gambar jika ada
+        if (imgEl) {
+            if (this.currentStarQuestion.image) {
+                imgEl.src = this.currentStarQuestion.image;
+                imgEl.classList.remove('hidden');
+            } else {
+                imgEl.classList.add('hidden');
+            }
+        }
 
         this.currentStarQuestion.options.forEach(opt => {
             const btn = document.createElement('button');
@@ -173,18 +217,21 @@ const Level5 = {
     submitAnswer(opt, buttonEl) {
         const fbText = document.getElementById('l5-feedback');
         fbText.classList.remove('hidden');
+        this.answerAttempts++;
         
         document.getElementById('l5-options').style.pointerEvents = 'none';
 
         if (opt === this.currentStarQuestion.answer) {
             SoundManager.play('correct');
+            GameFeedback.show('correct', GameState.practiceMode ? 'Bintang latihan!' : '+150 XP');
             buttonEl.className = "w-full py-2.5 bg-green-500/20 border border-green-500 text-green-300 rounded-xl text-xs font-bold";
             this.starCollectedCount++;
             GameState.addScore(150);
             this.updateUI();
-            fbText.innerHTML = `<span class="text-green-400 font-bold">Benar! Bintang dikumpulkan  (+150 XP)</span>`;
+            fbText.innerHTML = `<span class="text-green-400 font-bold">Benar! Bintang dikumpulkan ${GameState.practiceMode ? '(Latihan)' : '(+150 XP)'}</span>`;
         } else {
             SoundManager.play('incorrect');
+            GameFeedback.show('wrong', 'Bintang melayang pergi');
             buttonEl.className = "w-full py-2.5 bg-red-500/20 border border-red-500 text-red-300 rounded-xl text-xs font-bold";
             fbText.innerHTML = `<span class="text-red-400 font-bold">Salah! Bintang melayang pergi...</span>`;
         }
@@ -199,7 +246,7 @@ const Level5 = {
                 GameState.currentLevel = 5;
                 GameState.completeLevel(5, {
                     score: 1000,
-                    accuracy: 100,
+                    accuracy: Math.floor((this.starCollectedCount / Math.max(1, this.answerAttempts)) * 100),
                     duration: durationStr
                 });
             } else {

@@ -11,6 +11,8 @@ const GameState = {
   }),
   history: StorageManager.get("history", []),
   currentLevel: 1,
+  lastLevel: StorageManager.get("lastLevel", 1),
+  practiceMode: false,
 
   load() {
     this.playerName = StorageManager.get("playerName", "");
@@ -19,7 +21,13 @@ const GameState = {
       materiRead: [],
       levelsCompleted: [],
     });
+    if (!Array.isArray(this.progress.materiRead)) this.progress.materiRead = [];
+    if (!Array.isArray(this.progress.levelsCompleted)) {
+      this.progress.levelsCompleted = [];
+    }
     this.history = StorageManager.get("history", []);
+    this.lastLevel = StorageManager.get("lastLevel", 1);
+    this.practiceMode = false;
   },
 
   save() {
@@ -27,16 +35,32 @@ const GameState = {
     StorageManager.set("score", this.score);
     StorageManager.set("progress", this.progress);
     StorageManager.set("history", this.history);
+    StorageManager.set("lastLevel", this.lastLevel);
     this.updateGlobalHeader();
   },
 
   addScore(points) {
+    if (this.practiceMode) return;
     this.score += points;
     this.save();
     this.updateGlobalHeader();
   },
 
   completeLevel(levelNum, stats = {}) {
+    this.lastLevel = levelNum;
+    StorageManager.set("lastLevel", this.lastLevel);
+
+    if (this.practiceMode) {
+      Dialog.alert(
+        `Latihan Level ${levelNum} selesai. Skor dan progres tidak disimpan dalam mode latihan.`,
+        () => {
+          this.practiceMode = false;
+          Router.go("home");
+        },
+      );
+      return;
+    }
+
     if (!this.progress.levelsCompleted.includes(levelNum)) {
       this.progress.levelsCompleted.push(levelNum);
     }
@@ -71,11 +95,55 @@ const GameState = {
   },
 };
 
+const LEVEL_GUIDES = {
+  1: {
+    title: "Petunjuk Level 1",
+    body: "Klik planet sesuai urutan orbit dari yang paling dekat dengan Matahari sampai yang paling jauh. Perhatikan target yang muncul di panel kanan.",
+  },
+  2: {
+    title: "Petunjuk Level 2",
+    body: "Pilih nama planet di sebelah kiri, lalu klik gambar planet yang cocok. Setelah semua terisi, tekan Validasi Jawaban.",
+  },
+  3: {
+    title: "Petunjuk Level 3",
+    body: "Baca pernyataan dengan teliti, lalu pilih Benar atau Salah. Setelah menjawab, baca penjelasan singkat sebelum soal berikutnya muncul.",
+  },
+  4: {
+    title: "Petunjuk Level 4",
+    body: "Pilih satu jawaban yang paling tepat. Setelah feedback tampil, tekan Lanjut untuk menuju pertanyaan berikutnya.",
+  },
+  5: {
+    title: "Petunjuk Level 5",
+    body: "Gerakkan pesawat dengan tombol kiri/kanan atau keyboard panah. Tangkap bintang, lalu jawab kuis untuk mengumpulkannya.",
+  },
+};
+
+const GameFeedback = {
+  show(type, message) {
+    const oldToast = document.getElementById("game-feedback-toast");
+    if (oldToast) oldToast.remove();
+
+    const toast = document.createElement("div");
+    toast.id = "game-feedback-toast";
+    toast.className = `game-feedback-toast ${type === "correct" ? "feedback-correct" : "feedback-wrong"}`;
+    toast.innerText = message || (type === "correct" ? "Jawaban benar!" : "Coba lagi!");
+    document.body.appendChild(toast);
+
+    setTimeout(() => toast.classList.add("is-visible"), 20);
+    setTimeout(() => {
+      toast.classList.remove("is-visible");
+      setTimeout(() => toast.remove(), 250);
+    }, 1200);
+  },
+};
+
 const Router = {
   currentPage: "splash",
+  previousPage: "splash",
 
   go(pageId) {
     SoundManager.play("click");
+    this.previousPage = this.currentPage;
     this.currentPage = pageId;
 
     // Update BGM sesuai dengan halaman baru
@@ -98,7 +166,7 @@ const Router = {
     if (pageId === "splash") {
       if (playerTag) playerTag.style.visibility = "hidden";
       if (btnScore) btnScore.style.visibility = "hidden";
-      if (btnHome) btnHome.style.visibility = "hidden";
+      if (btnHome) btnHome.style.visibility = "visible";
     } else {
       if (playerTag) playerTag.style.visibility = "visible";
       if (btnScore) btnScore.style.visibility = "visible";
@@ -109,6 +177,14 @@ const Router = {
     if (window.missionGameLoopId) {
       cancelAnimationFrame(window.missionGameLoopId);
       window.missionGameLoopId = null;
+    }
+
+    if (
+      typeof Level5 !== "undefined" &&
+      typeof Level5.cleanup === "function" &&
+      pageId !== "level5"
+    ) {
+      Level5.cleanup();
     }
 
     // Pastikan kamera AR dinonaktifkan saat meninggalkan halaman AR
@@ -174,32 +250,62 @@ const Router = {
   },
 };
 
+function startLevel(levelNum, practiceMode = false) {
+  GameState.currentLevel = levelNum;
+  GameState.lastLevel = levelNum;
+  GameState.practiceMode = practiceMode;
+  GameState.save();
+  Router.go("level" + levelNum);
+}
+
+function continueLastLevel() {
+  const lastLevel = Number(GameState.lastLevel) || 1;
+  startLevel(Math.min(Math.max(lastLevel, 1), 5), false);
+}
+
+function showLevelGuide(levelNum) {
+  const guide = LEVEL_GUIDES[levelNum];
+  if (!guide) return;
+  Dialog.show({
+    title: guide.title.toUpperCase(),
+    message: guide.body,
+    confirmText: "Mengerti",
+    showCancel: false,
+    icon: "💡",
+  });
+}
+
 function openMissionSelector() {
   const container = document.getElementById("main-content");
   container.innerHTML = `
-    <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-5 md:p-6 max-w-lg mx-auto text-center">
+    <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-5 md:p-6 max-w-2xl mx-auto text-center">
         <h2 class="font-bubble-title text-2xl md:text-3xl text-yellow-300 mb-5">PILIH TANTANGAN MISI</h2>
-        <div class="grid grid-cols-1 gap-2.5 max-h-[360px] overflow-y-auto pr-1">
-            <button onclick="Router.go('level1')" class="py-3.5 bg-[#0a1931] hover:bg-cyan-500/20 border-2 border-cyan-400/40 rounded-2xl font-bold transition-all text-xs md:text-sm text-left px-5 flex justify-between items-center">
-                <span>🛰️ LEVEL 1: URUTAN ORBIT PLANET</span>
-                <span class="text-[10px] bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded-full font-bold uppercase shrink-0">Game</span>
-            </button>
-            <button onclick="Router.go('level2')" class="py-3.5 bg-[#0a1931] hover:bg-cyan-500/20 border-2 border-cyan-400/40 rounded-2xl font-bold transition-all text-xs md:text-sm text-left px-5 flex justify-between items-center">
-                <span>🪐 LEVEL 2: COCOKKAN GAMBAR</span>
-                <span class="text-[10px] bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded-full font-bold uppercase shrink-0">Game</span>
-            </button>
-            <button onclick="Router.go('level3')" class="py-3.5 bg-[#0a1931] hover:bg-cyan-500/20 border-2 border-cyan-400/40 rounded-2xl font-bold transition-all text-xs md:text-sm text-left px-5 flex justify-between items-center">
-                <span>⚖️ LEVEL 3: BENAR / SALAH</span>
-                <span class="text-[10px] bg-yellow-500/20 text-yellow-300 px-2 py-0.5 rounded-full font-bold uppercase shrink-0">Kuis</span>
-            </button>
-            <button onclick="Router.go('level4')" class="py-3.5 bg-[#0a1931] hover:bg-cyan-500/20 border-2 border-cyan-400/40 rounded-2xl font-bold transition-all text-xs md:text-sm text-left px-5 flex justify-between items-center">
-                <span>📝 LEVEL 4: PILIHAN GANDA</span>
-                <span class="text-[10px] bg-yellow-500/20 text-yellow-300 px-2 py-0.5 rounded-full font-bold uppercase shrink-0">Kuis</span>
-            </button>
-            <button onclick="Router.go('level5')" class="py-3.5 bg-[#0a1931] hover:bg-cyan-500/20 border-2 border-cyan-400/40 rounded-2xl font-bold transition-all text-xs md:text-sm text-left px-5 flex justify-between items-center">
-                <span>🚀 LEVEL 5: MISSION SPACE</span>
-                <span class="text-[10px] bg-green-500/20 text-green-300 px-2 py-0.5 rounded-full font-bold uppercase shrink-0">Game Pesawat</span>
-            </button>
+        <p class="text-[11px] text-gray-400 mb-4">Pilih Misi untuk mencatat skor atau Latihan untuk mencoba tanpa menyimpan progres.</p>
+        <div class="grid grid-cols-1 gap-2.5 max-h-[380px] overflow-y-auto pr-1">
+            ${[1, 2, 3, 4, 5]
+              .map((levelNum) => {
+                const labels = {
+                  1: "🛰️ LEVEL 1: URUTAN ORBIT PLANET",
+                  2: "🪐 LEVEL 2: COCOKKAN GAMBAR",
+                  3: "⚖️ LEVEL 3: BENAR / SALAH",
+                  4: "📝 LEVEL 4: PILIHAN GANDA",
+                  5: "🚀 LEVEL 5: MISSION SPACE",
+                };
+                const type = levelNum <= 2 ? "Game" : levelNum <= 4 ? "Kuis" : "Game Pesawat";
+                return `
+                  <div class="bg-[#0a1931] border-2 border-cyan-400/30 rounded-2xl p-3 flex flex-col sm:flex-row sm:items-center gap-3 text-left">
+                    <div class="flex-1">
+                      <p class="text-xs md:text-sm font-bold">${labels[levelNum]}</p>
+                      <span class="inline-block mt-1 text-[10px] bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded-full font-bold uppercase">${type}</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 sm:w-44">
+                      <button onclick="startLevel(${levelNum}, false)" class="py-2 bg-cyan-400 hover:bg-cyan-300 text-black rounded-xl font-extrabold text-[11px] transition-all">Misi</button>
+                      <button onclick="startLevel(${levelNum}, true)" class="py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl font-bold text-[11px] transition-all">Latihan</button>
+                    </div>
+                  </div>
+                `;
+              })
+              .join("")}
         </div>
         <button onclick="Router.go('home')" class="py-2.5 text-xs text-gray-400 hover:text-white transition-all mt-3 block w-full text-center">Batal</button>
     </div>
@@ -232,6 +338,14 @@ function confirmExit() {
       Router.go("home");
     },
   });
+}
+
+function handleHomeButton() {
+  if (Router.currentPage === "splash" || Router.currentPage === "home") {
+    Router.go("home");
+  } else {
+    confirmExit();
+  }
 }
 
 function goToNextLevel() {

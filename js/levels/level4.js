@@ -24,8 +24,8 @@ const Level4 = {
         document.getElementById('l4-feedback').classList.add('hidden');
 
         const imgEl = document.getElementById('l4-question-img');
-        if (q.fotoAsli) {
-            imgEl.src = q.fotoAsli;
+        if (q.image) {
+            imgEl.src = q.image;
             imgEl.classList.remove('hidden');
         } else {
             imgEl.classList.add('hidden');
@@ -57,13 +57,15 @@ const Level4 = {
 
         if (selectedOpt === q.answer) {
             SoundManager.play('correct');
+            GameFeedback.show('correct', GameState.practiceMode ? 'Benar!' : '+200 XP');
             buttonEl.className = "w-full text-left p-4 bg-green-500/20 border border-green-500 text-green-300 rounded-2xl text-xs font-bold";
             this.score += 200;
             GameState.addScore(200);
-            fbTitle.innerText = "Luar Biasa! 🎉 (+200 XP)";
+            fbTitle.innerText = `Luar Biasa! 🎉 ${GameState.practiceMode ? '(Latihan)' : '(+200 XP)'}`;
             fbTitle.className = "font-bold text-green-400 mb-1";
         } else {
             SoundManager.play('incorrect');
+            GameFeedback.show('wrong', 'Kurang tepat');
             buttonEl.className = "w-full text-left p-4 bg-red-500/20 border border-red-500 text-red-300 rounded-2xl text-xs font-bold";
             fbTitle.innerText = "Kurang Tepat! ✘";
             fbTitle.className = "font-bold text-red-400 mb-1";

@@ -3,14 +3,59 @@
    =================================================== */
 
 const Pages = {
+  levelControls(levelNum) {
+    return `
+        <div class="flex flex-wrap items-center justify-end gap-2">
+            <span class="px-3 py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${GameState.practiceMode ? "bg-purple-500/20 text-purple-200 border border-purple-400/40" : "bg-green-500/20 text-green-200 border border-green-400/40"}">
+                ${GameState.practiceMode ? "Latihan" : "Misi Skor"}
+            </span>
+            <button onclick="showLevelGuide(${levelNum})" class="px-3 py-1.5 bg-yellow-400/15 hover:bg-yellow-400/25 border border-yellow-300/30 rounded-full text-[10px] md:text-xs font-bold text-yellow-200 transition-all">Petunjuk</button>
+            <button onclick="Router.go('home')" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-full text-[10px] md:text-xs font-bold border border-white/10 transition-all">Home</button>
+        </div>
+    `;
+  },
+
+  progressMap() {
+    const completed = GameState.progress.levelsCompleted || [];
+    return `
+        <div class="w-full max-w-4xl px-4 mb-5">
+            <div class="bg-black/40 border border-cyan-500/20 rounded-2xl p-3 md:p-4 backdrop-blur-md">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+                    <div class="text-left">
+                        <p class="text-[10px] uppercase tracking-widest text-cyan-300 font-bold">Peta Progres Misi</p>
+                        <p class="text-[11px] text-gray-400">Selesaikan 5 level untuk menjadi Solar System Expert.</p>
+                    </div>
+                    <button onclick="continueLastLevel()" class="px-4 py-2 bg-gradient-to-r from-yellow-400 to-amber-500 text-black rounded-xl font-extrabold text-xs shadow-lg active:scale-95 transition-all">
+                        Lanjutkan Misi
+                    </button>
+                </div>
+                <div class="grid grid-cols-5 gap-2">
+                    ${[1, 2, 3, 4, 5]
+                      .map((levelNum) => {
+                        const isDone = completed.includes(levelNum);
+                        const isLast = Number(GameState.lastLevel) === levelNum;
+                        return `
+                            <button onclick="startLevel(${levelNum}, false)" class="relative min-h-[54px] rounded-xl border ${isDone ? "bg-green-500/20 border-green-400/50 text-green-200" : isLast ? "bg-yellow-400/15 border-yellow-300/50 text-yellow-200" : "bg-white/5 border-white/10 text-gray-300"} flex flex-col items-center justify-center gap-0.5 transition-all hover:bg-cyan-500/15">
+                                <span class="font-bubble-title text-base md:text-lg">${isDone ? "✓" : levelNum}</span>
+                                <span class="text-[8px] md:text-[9px] font-bold uppercase">${isDone ? "Selesai" : isLast ? "Terakhir" : "Level"}</span>
+                            </button>
+                        `;
+                      })
+                      .join("")}
+                </div>
+            </div>
+        </div>
+    `;
+  },
+
   splash() {
     return `
-        <div class="flex flex-col items-center justify-center text-center py-4 px-4 max-w-lg mx-auto">
-            <div class="mb-3 float-anim">
-                <img src="${ASSETS.astronautSplash}" alt="Astronaut" class="w-28 h-28 md:w-40 md:h-40 rounded-full object-cover border-4 border-cyan-400 shadow-2xl" onerror="this.src='${ASSETS.placeholder}'">
+        <div class="relative flex flex-col items-center justify-center text-center py-4 px-4 max-w-lg mx-auto">
+            <div class="mt-4 md:mt-2 mb-3 float-anim">
+                <img src="${ASSETS.astronautSplash}" alt="Siswa SMP astronaut" class="w-28 h-28 md:w-40 md:h-40 rounded-full object-cover border-4 border-cyan-400 shadow-2xl" onerror="this.src='${ASSETS.placeholder}'">
             </div>
             <p class="text-[10px] md:text-xs uppercase tracking-widest text-cyan-300 font-bold mb-1">Edisi Eksplorasi Digital</p>
-            <h2 class="font-bubble-title text-2xl md:text-5xl text-yellow-300 font-bubble-stroke uppercase leading-tight mb-4 md:mb-6">
+            <h2 class="font-bubble-title text-2xl md:text-5xl text-yellow-300 uppercase leading-tight mb-4 md:mb-6">
                 MENGENAL<br/><span class="text-white">TATA SURYA</span>
             </h2>
             
@@ -32,15 +77,17 @@ const Pages = {
   home() {
     return `
         <div class="flex flex-col items-center justify-center text-center py-2 md:py-4">
-            <h2 class="font-bubble-title text-3xl md:text-6xl text-yellow-300 font-bubble-stroke uppercase mb-6 md:mb-10 leading-none">
-                MENGENAL<br/><span class="text-white text-2xl md:text-5xl">TATA SURYA</span>
+            <h2 class="font-bubble-title text-3xl md:text-6xl text-yellow-300 uppercase mb-6 md:mb-10 leading-none">
+                MENGENAL<br/><span class="text-cyan-200 text-2xl md:text-5xl">TATA SURYA</span>
             </h2>
+
+            ${this.progressMap()}
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 w-full max-w-4xl px-4 z-10">
                 
                 <div onclick="Router.go('materi')" class="card-menu-cyan p-4 md:p-6 flex flex-row md:flex-col items-center justify-start md:justify-between gap-4 md:gap-0 min-h-[90px] md:min-h-[280px] cursor-pointer">
                     <div class="w-16 h-16 md:w-32 md:h-32 flex items-center justify-center float-anim shrink-0">
-                        <img src="${ASSETS.astronautMateri}" alt="Astronaut Reading" class="w-12 h-12 md:w-28 md:h-28 rounded-full object-cover border-2 md:border-4 border-white shadow-xl" onerror="this.src='${ASSETS.placeholder}'">
+                        <img src="${ASSETS.astronautMateri}" alt="Siswa SMP membaca materi" class="w-12 h-12 md:w-28 md:h-28 rounded-full object-cover border-2 md:border-4 border-white shadow-xl" onerror="this.src='${ASSETS.placeholder}'">
                     </div>
                     <div class="flex flex-col items-start md:items-center">
                         <span class="font-bubble-title text-xl md:text-2xl tracking-wider text-white font-bubble-stroke">MATERI</span>
@@ -50,7 +97,7 @@ const Pages = {
 
                 <div onclick="openMissionSelector()" class="card-menu-cyan p-4 md:p-6 flex flex-row md:flex-col items-center justify-start md:justify-between gap-4 md:gap-0 min-h-[90px] md:min-h-[280px] cursor-pointer">
                     <div class="w-16 h-16 md:w-32 md:h-32 flex items-center justify-center float-anim shrink-0" style="animation-delay: 0.5s;">
-                        <img src="${ASSETS.astronautGame}" alt="Astronaut Gaming" class="w-12 h-12 md:w-28 md:h-28 rounded-full object-cover border-2 md:border-4 border-white shadow-xl" onerror="this.src='${ASSETS.placeholder}'">
+                        <img src="${ASSETS.astronautGame}" alt="Siswa SMP bermain misi" class="w-12 h-12 md:w-28 md:h-28 rounded-full object-cover border-2 md:border-4 border-white shadow-xl" onerror="this.src='${ASSETS.placeholder}'">
                     </div>
                     <div class="flex flex-col items-start md:items-center">
                         <span class="font-bubble-title text-xl md:text-2xl tracking-wider text-white font-bubble-stroke text-left md:text-center">MISI PETUALANGAN</span>
@@ -60,7 +107,7 @@ const Pages = {
 
                 <div onclick="Router.go('ar')" class="card-menu-cyan p-4 md:p-6 flex flex-row md:flex-col items-center justify-start md:justify-between gap-4 md:gap-0 min-h-[90px] md:min-h-[280px] cursor-pointer">
                     <div class="w-16 h-16 md:w-32 md:h-32 flex items-center justify-center float-anim shrink-0" style="animation-delay: 1s;">
-                        <img src="${ASSETS.astronautQuiz}" alt="Astronaut AR Explorer" class="w-12 h-12 md:w-28 md:h-28 rounded-full object-cover border-2 md:border-4 border-white shadow-xl" onerror="this.src='${ASSETS.placeholder}'">
+                        <img src="${ASSETS.astronautQuiz}" alt="Siswa SMP menjelajah AR" class="w-12 h-12 md:w-28 md:h-28 rounded-full object-cover border-2 md:border-4 border-white shadow-xl" onerror="this.src='${ASSETS.placeholder}'">
                     </div>
                     <div class="flex flex-col items-start md:items-center">
                         <span class="font-bubble-title text-xl md:text-2xl tracking-wider text-white font-bubble-stroke">JELAJAH AR</span>
@@ -97,8 +144,11 @@ const Pages = {
                     <span class="text-xs font-bold text-yellow-400">MISI LEVEL 1</span>
                     <h2 class="font-bubble-title text-xl md:text-2xl text-white">URUTAN ORBIT PLANET</h2>
                 </div>
-                <div class="text-xs md:text-sm font-bold bg-red-500/20 border border-red-500/40 px-3 py-1.5 rounded-full text-red-300">
-                    ❤️ NYAWA: <span id="l1-lives" class="font-bubble-title text-base md:text-lg">3</span>
+                <div class="flex flex-wrap items-center justify-end gap-2">
+                    <div class="text-xs md:text-sm font-bold bg-red-500/20 border border-red-500/40 px-3 py-1.5 rounded-full text-red-300">
+                        ❤️ NYAWA: <span id="l1-lives" class="font-bubble-title text-base md:text-lg">3</span>
+                    </div>
+                    ${this.levelControls(1)}
                 </div>
             </div>
 
@@ -127,7 +177,7 @@ const Pages = {
                     <span class="text-xs font-bold text-yellow-400">MISI LEVEL 2</span>
                     <h2 class="font-bubble-title text-xl md:text-2xl text-white">COCOKKAN PLANET</h2>
                 </div>
-                <button onclick="Router.go('home')" class="px-4 py-1.5 bg-white/5 rounded-full text-xs font-bold border border-white/10">Kembali</button>
+                ${this.levelControls(2)}
             </div>
 
             <p class="text-xs text-cyan-300 mb-4 bg-cyan-500/10 p-3 rounded-xl">Klik nama planet, lalu klik gambar planet yang sesuai!</p>
@@ -149,7 +199,10 @@ const Pages = {
         <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6 max-w-2xl mx-auto">
             <div class="flex flex-wrap items-center justify-between gap-3 border-b border-cyan-500/20 pb-3 mb-4">
                 <h2 class="font-bubble-title text-xl md:text-2xl text-white">BENAR ATAU SALAH</h2>
-                <span class="text-xs font-bold bg-cyan-500/20 px-3 py-1.5 rounded-full text-cyan-300" id="l3-progress">1 / 15</span>
+                <div class="flex flex-wrap items-center justify-end gap-2">
+                    <span class="text-xs font-bold bg-cyan-500/20 px-3 py-1.5 rounded-full text-cyan-300" id="l3-progress">1 / 15</span>
+                    ${this.levelControls(3)}
+                </div>
             </div>
 
             <div class="w-full bg-white/5 h-2 rounded-full mb-4 overflow-hidden">
@@ -174,7 +227,10 @@ const Pages = {
         <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6 max-w-2xl mx-auto">
             <div class="flex flex-wrap items-center justify-between gap-3 border-b border-cyan-500/20 pb-3 mb-4">
                 <h2 class="font-bubble-title text-xl md:text-2xl text-white">QUIZ ADVENTURE</h2>
-                <span class="text-xs font-bold bg-cyan-500/20 px-3 py-1.5 rounded-full text-cyan-300" id="l4-count">1 / 10</span>
+                <div class="flex flex-wrap items-center justify-end gap-2">
+                    <span class="text-xs font-bold bg-cyan-500/20 px-3 py-1.5 rounded-full text-cyan-300" id="l4-count">1 / 10</span>
+                    ${this.levelControls(4)}
+                </div>
             </div>
 
             <div class="w-full bg-white/5 h-2 rounded-full mb-4 overflow-hidden">
@@ -182,8 +238,10 @@ const Pages = {
             </div>
 
             <div class="bg-cyan-950/20 border border-cyan-500/30 p-4 md:p-6 rounded-2xl mb-4">
-                <div class="w-full flex justify-center mb-3">
-                    <img id="l4-question-img" src="" alt="Ilustrasi Soal" class="rounded-xl border-2 border-cyan-400 max-h-32 md:max-h-40 object-cover shadow-lg hidden game-image">
+                <div class="w-full flex justify-center mb-4">
+                    <img id="l4-question-img" src="" alt="Ilustrasi Soal"
+                        class="rounded-2xl border border-cyan-500/30 max-h-40 md:max-h-52 w-auto object-contain shadow-xl hidden"
+                        style="background: rgba(0,0,0,0.3)">
                 </div>
                 <h3 id="l4-question" class="text-sm md:text-base font-bold mb-4"></h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3" id="l4-options-container"></div>
@@ -201,9 +259,12 @@ const Pages = {
   level5() {
     return `
         <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6">
-            <div class="flex items-center justify-between gap-3 border-b border-cyan-500/20 pb-3 mb-4">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-cyan-500/20 pb-3 mb-4">
                 <h2 class="font-bubble-title text-xl md:text-2xl text-white">MISSION SPACE</h2>
-                <span class="text-xs md:text-sm font-bold bg-cyan-500/20 px-3 md:px-4 py-1.5 rounded-full text-yellow-300" id="l5-star-count">⭐ 0 / 5</span>
+                <div class="flex flex-wrap items-center justify-end gap-2">
+                    <span class="text-xs md:text-sm font-bold bg-cyan-500/20 px-3 md:px-4 py-1.5 rounded-full text-yellow-300" id="l5-star-count">⭐ 0 / 5</span>
+                    ${this.levelControls(5)}
+                </div>
             </div>
 
             <div class="flex flex-col gap-4">
@@ -212,7 +273,11 @@ const Pages = {
                     
                     <div id="l5-question-overlay" class="absolute inset-0 bg-black/95 backdrop-blur-sm rounded-2xl flex items-center justify-center p-3 md:p-6 hidden">
                         <div class="bg-gradient-to-b from-[#0a1931] to-[#15305b] border-2 border-cyan-400 p-4 md:p-6 rounded-2xl w-full max-w-md text-center shadow-2xl">
-                            <span class="text-xl md:text-2xl mb-2 block">✨ TANTANGAN BINTANG ✨</span>
+                            <span class="text-lg md:text-xl mb-2 block font-bold tracking-wider text-cyan-300">✦ TANTANGAN BINTANG ✦</span>
+                            <div class="flex justify-center mb-3">
+                                <img id="l5-question-img" src="" alt="" class="h-24 md:h-32 object-contain rounded-xl border border-cyan-500/20 hidden"
+                                    onerror="this.style.display='none'">
+                            </div>
                             <h4 id="l5-question" class="text-xs md:text-sm font-bold mb-3"></h4>
                             <div class="flex flex-col gap-2 mb-3" id="l5-options"></div>
                             <p id="l5-feedback" class="text-xs font-semibold hidden"></p>
@@ -282,15 +347,29 @@ const Pages = {
   about() {
     return `
         <div class="bg-black/50 border border-cyan-500/20 rounded-[32px] p-6 max-w-xl mx-auto">
-            <h2 class="font-bubble-title text-2xl text-cyan-300 mb-6">Tentang & Bantuan</h2>
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+                <h2 class="font-bubble-title text-2xl text-cyan-300">Tentang & Bantuan</h2>
+                <button onclick="Router.go(Router.previousPage || 'home')" class="px-4 py-1.5 bg-white/5 hover:bg-white/10 rounded-full text-xs font-bold transition-all border border-white/10">← Kembali</button>
+            </div>
             <div class="space-y-4 text-xs md:text-sm text-gray-300 leading-relaxed">
                 <p><strong>Kosmos Petualang</strong> adalah platform edukasi interaktif yang dirancang khusus untuk mempermudah siswa SMP Kelas VII dalam mengeksplorasi ilmu sains Tata Surya dengan seru!</p>
                 <div class="bg-[#0a1931] border border-cyan-500/30 p-4 rounded-xl space-y-2">
-                    <h4 class="font-bold text-white text-xs">CARA BERMAIN:</h4>
+                    <h4 class="font-bold text-white text-xs">PETUNJUK NARASI:</h4>
+                    <p class="text-[11px]">Mulailah dari halaman sampul dengan menulis nama panggilan, lalu tekan <strong>Mulai Eksplorasi</strong>. Di Home, siswa dapat melihat peta progres, melanjutkan level terakhir, membaca Materi, memainkan Misi Petualangan dari Level 1 sampai Level 5, atau membuka Jelajah AR. Pilih <strong>Misi</strong> untuk mencatat skor dan progres, atau <strong>Latihan</strong> untuk mencoba level tanpa menyimpan nilai.</p>
+                </div>
+                <div class="bg-[#0a1931] border border-yellow-400/30 p-4 rounded-xl space-y-2">
+                    <h4 class="font-bold text-white text-xs">PETUNJUK TOMBOL NAVIGASI:</h4>
                     <ul class="list-disc pl-5 space-y-1 text-[11px]">
-                        <li><strong>Materi:</strong> Baca materi sains lengkap dengan sub-bab detail untuk memahami teori-teori planet.</li>
-                        <li><strong>Misi Petualangan:</strong> Mainkan Level 1 s.d. Level 5 secara berurutan.</li>
-                        <li><strong>Jelajah AR:</strong> Scan planet yang melayang di sekitarmu lewat kamera HP!</li>
+                        <li><strong>Home / 🏠:</strong> kembali ke menu utama.</li>
+                        <li><strong>? Petunjuk:</strong> membuka halaman bantuan dan penjelasan penggunaan aplikasi.</li>
+                        <li><strong>👤:</strong> melihat skor, lencana, dan riwayat misi.</li>
+                        <li><strong>🔊:</strong> menyalakan atau mematikan suara latar.</li>
+                        <li><strong>Kembali / Batal:</strong> kembali ke halaman sebelumnya atau membatalkan pilihan.</li>
+                        <li><strong>Lanjutkan Misi:</strong> membuka level terakhir yang dimainkan.</li>
+                        <li><strong>Misi / Latihan:</strong> menjalankan level dengan skor atau mencoba tanpa menyimpan progres.</li>
+                        <li><strong>Petunjuk:</strong> menampilkan arahan khusus untuk level yang sedang dimainkan.</li>
+                        <li><strong>Level Berikutnya / Ulangi Level Ini:</strong> lanjut ke misi selanjutnya atau mengulang misi yang sama setelah selesai.</li>
+                        <li><strong>◀ KIRI dan KANAN ▶:</strong> menggerakkan pesawat pada Mission Space.</li>
                     </ul>
                 </div>
                 <p class="text-[11px] text-gray-500 text-center border-t border-white/5 pt-4">Versi 8.0 (Enhanced AR Edition) | Dikembangkan untuk IPA Kurikulum Merdeka.</p>
@@ -302,61 +381,131 @@ const Pages = {
   ar() {
     return `
         <div class="bg-black/50 border border-cyan-500/20 rounded-[24px] md:rounded-[32px] p-4 md:p-6 backdrop-blur-md">
-            <div class="flex flex-wrap items-center justify-between gap-4 border-b border-cyan-500/20 pb-4 mb-4 md:mb-6">
+
+            <!-- Header -->
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-cyan-500/20 pb-4 mb-5">
                 <div>
-                    <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider block mb-1">Augmented Reality & 3D</span>
-                    <h2 class="font-bubble-title text-xl md:text-2xl text-white font-bubble-stroke">Jelajah AR Tata Surya</h2>
+                    <span class="text-[9px] font-bold text-cyan-400 uppercase tracking-[0.2em] block mb-1">
+                        ✦ Solar System Explorer 3D
+                    </span>
+                    <h2 class="font-bubble-title text-lg md:text-2xl text-white leading-none">
+                        Jelajah AR Tata Surya
+                    </h2>
                 </div>
-                <button onclick="ARPage.goBack()" class="px-4 py-1.5 md:px-5 md:py-2 bg-white/5 hover:bg-white/10 rounded-full text-xs font-bold transition-all border border-white/10">Kembali</button>
+                <div class="flex items-center gap-2">
+                    <span class="hidden md:flex items-center gap-1.5 text-[10px] text-gray-500 bg-white/3 border border-white/5 rounded-lg px-2.5 py-1.5">
+                        <span>🖱</span> Seret · Cubit · Scroll
+                    </span>
+                    <button onclick="ARPage.goBack()"
+                        class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-xs font-bold transition-all border border-white/10">
+                        ← Kembali
+                    </button>
+                </div>
             </div>
 
-            <div class="flex flex-col md:grid md:grid-cols-12 gap-4 md:gap-6">
-                <!-- 3D Model Viewer Container -->
-                <div class="md:col-span-8 relative bg-[#0a1931]/60 rounded-xl md:rounded-2xl overflow-hidden border border-cyan-500/10 flex items-center justify-center" style="height: 400px; md:height: 500px;">
-                    <model-viewer
-                        id="solar-system-3d"
-                        src="${MODEL_3D_TATA_SURYA}"
-                        ar
-                        ar-modes="webxr scene-viewer quick-look"
-                        camera-controls
-                        auto-rotate
-                        rotation-intensity="0.5"
-                        shadow-intensity="1.5"
-                        interaction-prompt="auto"
-                        alt="3D Solar System Model"
-                        class="w-full h-full"
-                        style="background-color: transparent;">
-                        
-                        <!-- Custom AR Trigger Button -->
-                        <button slot="ar-button" id="ar-trigger-btn" class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-black px-5 py-2.5 rounded-2xl font-bold text-xs md:text-sm shadow-lg border-b-4 border-amber-700 active:scale-95 transition-all">
-                            🌌 AR Kamera
-                        </button>
-                    </model-viewer>
+            <!-- Planet Selector -->
+            <div class="mb-4">
+                <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider block mb-2">Pilih Objek:</span>
+                <div class="flex flex-wrap gap-1.5" id="planet-selector-scroll"></div>
+            </div>
 
-                    <!-- User Guide Overlay -->
-                    <div class="absolute top-3 left-3 bg-black/70 border border-cyan-500/30 backdrop-blur-md rounded-lg p-2.5 max-w-[200px] pointer-events-none text-[9px] space-y-0.5 text-gray-300">
-                        <p class="font-bold text-cyan-300 text-[10px]">💡 Kontrol:</p>
-                        <p>Seret: Putar • Cubit: Zoom</p>
-                    </div>
-                </div>
+            <!-- Main Layout -->
+            <div class="flex flex-col xl:grid xl:grid-cols-12 gap-4 md:gap-5">
 
-                <!-- Info and Planet Selector Panel -->
-                <div class="md:col-span-4 bg-[#0a1931]/80 border border-cyan-500/20 rounded-xl md:rounded-2xl p-4 md:p-6 flex flex-col">
-                    <!-- Selector Tabs -->
-                    <div class="mb-4 pb-4 border-b border-cyan-500/10 shrink-0">
-                        <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider block mb-2">Pilih Planet:</span>
-                        <div class="flex flex-wrap gap-1.5" id="planet-selector-scroll">
-                            <!-- JS will inject buttons here -->
+                <!-- 3D Viewer -->
+                <div class="xl:col-span-7 flex flex-col gap-3">
+
+                    <div id="ar-viewer-wrap"
+                        class="relative rounded-2xl overflow-hidden border transition-all duration-700"
+                        style="height: 360px; background: radial-gradient(ellipse at center, #0d1f3c 0%, #030b1a 100%); border-color: rgba(0,212,255,0.15);">
+
+                        <model-viewer
+                            id="solar-system-3d"
+                            src="${MODEL_3D_TATA_SURYA}"
+                            ar
+                            ar-modes="webxr scene-viewer quick-look"
+                            camera-controls
+                            auto-rotate
+                            auto-rotate-delay="3000"
+                            rotation-per-second="4deg"
+                            orbit-sensitivity="2.5"
+                            zoom-sensitivity="2.0"
+                            shadow-intensity="1"
+                            exposure="1.2"
+                            interaction-prompt="none"
+                            alt="3D Solar System Model"
+                            class="w-full h-full"
+                            style="background-color: transparent; --progress-bar-color: transparent;">
+
+                            <button slot="ar-button"
+                                class="absolute bottom-4 right-4 flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white px-4 py-2.5 rounded-xl font-bold text-[11px] shadow-lg shadow-cyan-500/20 active:scale-95 transition-all border border-cyan-400/30">
+                                📡 Buka AR
+                            </button>
+                        </model-viewer>
+
+                        <!-- HUD Planet Name -->
+                        <div class="absolute top-3 left-3 pointer-events-none">
+                            <div class="backdrop-blur-md bg-black/60 rounded-xl px-3 py-2 border border-white/10">
+                                <div id="ar-hud-planet-type"
+                                    class="text-[8px] font-bold uppercase tracking-widest mb-0.5 px-1.5 py-0.5 rounded-full inline-block bg-white/10 text-gray-400">
+                                    —
+                                </div>
+                                <div id="ar-hud-planet-name"
+                                    class="text-sm font-bold text-white leading-none mt-0.5">
+                                    Memuat...
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HUD Orbit Period -->
+                        <div class="absolute top-3 right-3 pointer-events-none">
+                            <div class="backdrop-blur-md bg-black/60 rounded-xl px-3 py-2 border border-white/10 text-right">
+                                <div class="text-[8px] text-gray-500 uppercase tracking-widest mb-0.5">Periode Orbit</div>
+                                <div id="ar-hud-orbit" class="text-[11px] font-bold text-cyan-300">—</div>
+                            </div>
+                        </div>
+
+                        <!-- Controls hint -->
+                        <div class="absolute bottom-4 left-4 pointer-events-none">
+                            <div class="flex items-center gap-1 bg-black/50 backdrop-blur-sm rounded-lg px-2 py-1.5 border border-white/5">
+                                <span class="text-[9px] text-gray-500">Seret · Cubit · Scroll untuk kontrol</span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Planet Detail Information -->
-                    <div class="flex-grow overflow-y-auto space-y-3 text-xs md:text-sm" id="planet-info-panel">
-                        <!-- JS will inject active details here -->
+                    <!-- Control Toolbar -->
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <button id="ar-btn-rotate"
+                            class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[10px] font-bold bg-white/5 hover:bg-cyan-500/10 border border-white/10 hover:border-cyan-500/30 transition-all">
+                            <span class="rotate-icon" style="display:inline-block; animation: spin 3s linear infinite">⟳</span>
+                            <span class="rotate-label">Auto Rotate</span>
+                        </button>
+                        <button id="ar-btn-reset"
+                            class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[10px] font-bold bg-white/5 hover:bg-cyan-500/10 border border-white/10 hover:border-cyan-500/30 transition-all">
+                            <span>⌖</span>
+                            <span>Reset Kamera</span>
+                        </button>
+                        <button id="ar-btn-light"
+                            class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[10px] font-bold bg-white/5 hover:bg-yellow-500/10 border border-white/10 hover:border-yellow-500/30 transition-all">
+                            <span>☀</span>
+                            <span class="light-label">Mode Gelap</span>
+                        </button>
+                        <button id="ar-btn-fullscreen"
+                            class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[10px] font-bold bg-white/5 hover:bg-white/10 border border-white/10 transition-all ml-auto">
+                            <span>⛶</span>
+                            <span class="hidden sm:inline">Layar Penuh</span>
+                        </button>
                     </div>
+                </div>
+
+                <!-- Info Panel -->
+                <div class="xl:col-span-5 bg-[#070f23]/90 border border-white/8 rounded-2xl p-4 flex flex-col"
+                    style="max-height: 470px; overflow-y: auto;">
+                    <div id="planet-info-panel" class="flex flex-col gap-3 text-xs"></div>
                 </div>
             </div>
         </div>
         `;
   },
 };
+

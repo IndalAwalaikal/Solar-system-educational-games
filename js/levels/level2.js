@@ -99,6 +99,7 @@ const Level2 = {
 
         if (correctCount === total) {
             SoundManager.play('win');
+            GameFeedback.show('correct', GameState.practiceMode ? 'Latihan selesai!' : 'Misi berhasil!');
             const durationSec = Math.floor((new Date() - this.startTime) / 1000);
             const durationStr = `${Math.floor(durationSec/60)}m ${durationSec%60}s`;
             GameState.currentLevel = 2;
@@ -109,6 +110,7 @@ const Level2 = {
             });
         } else {
             SoundManager.play('incorrect');
+            GameFeedback.show('wrong', `${correctCount} dari ${total} benar`);
             Dialog.alert(`Skor: ${correctCount} / ${total} Benar. Ayo susun kembali dengan benar!`);
             this.init();
         }

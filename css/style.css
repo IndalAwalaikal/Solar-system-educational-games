@@ -4,23 +4,24 @@
    =================================================== */
 
 body {
-    font-family: 'Fredoka', sans-serif;
-    background-color: #051329;
+    font-family: 'Inter', sans-serif;
+    background-color: #030b1a;
     overflow-x: hidden;
     user-select: none;
     -webkit-user-select: none;
 }
 
 .font-bubble-title {
-    font-family: 'Luckiest Guy', cursive;
-    letter-spacing: 0.05em;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 0.06em;
     text-shadow: 
-        0 4px 0 #0a1931,
-        0 8px 0 rgba(0, 0, 0, 0.4);
+        0 0 24px rgba(0, 212, 255, 0.35),
+        0 0 48px rgba(0, 212, 255, 0.12);
+    font-weight: 700;
 }
 
 .font-bubble-stroke {
-    -webkit-text-stroke: 2px #0a1931;
+    /* stroke dihapus, diganti glow pada .font-bubble-title */
 }
 
 #stars-canvas {
@@ -35,45 +36,59 @@ body {
 
 /* === Buttons === */
 .btn-gold-bubble {
-    background: linear-gradient(to bottom, #ffe066, #f5b000);
-    border: 4px solid #805000;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     box-shadow: 
-        inset 0 4px 0 rgba(255, 255, 255, 0.6),
-        0 6px 0 #503000,
-        0 10px 10px rgba(0, 0, 0, 0.5);
-    transition: all 0.1s ease;
+        0 4px 20px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+}
+.btn-gold-bubble:hover {
+    background: rgba(0, 212, 255, 0.12);
+    border-color: rgba(0, 212, 255, 0.35);
+    box-shadow: 
+        0 4px 24px rgba(0, 212, 255, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 .btn-gold-bubble:active {
-    transform: translateY(4px);
-    box-shadow: 
-        inset 0 2px 0 rgba(255, 255, 255, 0.6),
-        0 2px 0 #503000,
-        0 4px 6px rgba(0, 0, 0, 0.5);
+    transform: scale(0.93);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 
 /* === Menu Cards === */
 .card-menu-cyan {
-    background: linear-gradient(135deg, #00b4d8 0%, #0077b6 100%);
-    border: 5px solid #00f0ff;
+    background: linear-gradient(135deg, rgba(5, 20, 50, 0.92) 0%, rgba(2, 10, 30, 0.96) 100%);
+    border: 1px solid rgba(0, 212, 255, 0.18);
     box-shadow: 
-        0 12px 0 #005f73,
-        0 15px 25px rgba(0, 240, 255, 0.25);
-    border-radius: 28px;
-    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    border-radius: 18px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
 }
+.card-menu-cyan::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.04) 0%, transparent 60%);
+    pointer-events: none;
+}
 .card-menu-cyan:hover {
-    transform: translateY(-8px) scale(1.03);
+    transform: translateY(-5px);
+    border-color: rgba(0, 212, 255, 0.4);
     box-shadow: 
-        0 20px 0 #005f73,
-        0 25px 35px rgba(0, 240, 255, 0.4);
+        0 16px 48px rgba(0, 0, 0, 0.6),
+        0 0 32px rgba(0, 212, 255, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 .card-menu-cyan:active {
-    transform: translateY(4px) scale(0.98);
-    box-shadow: 
-        0 4px 0 #005f73,
-        0 8px 15px rgba(0, 240, 255, 0.3);
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
 /* === Orbit === */
@@ -97,16 +112,16 @@ body {
 
 /* === Decorations === */
 .planet-horizon {
-    background: linear-gradient(to top, #e0a300, #ffca28);
-    border-top: 6px solid #ffb300;
-    box-shadow: 0 -10px 40px rgba(255, 179, 0, 0.3);
-    border-top-left-radius: 50% 12%;
-    border-top-right-radius: 50% 12%;
+    background: linear-gradient(to top, rgba(20, 5, 60, 0.85) 0%, rgba(5, 2, 20, 0) 100%);
+    border-top: 1px solid rgba(120, 60, 220, 0.25);
+    box-shadow: 0 -16px 60px rgba(70, 20, 160, 0.12);
+    border-top-left-radius: 50% 15%;
+    border-top-right-radius: 50% 15%;
 }
 
 .crater {
-    background: rgba(0, 0, 0, 0.08);
-    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.02);
+    box-shadow: inset 1px 1px 3px rgba(255, 255, 255, 0.03);
     border-radius: 50%;
     position: absolute;
 }
@@ -136,6 +151,42 @@ body {
 }
 .float-anim {
     animation: float 3s ease-in-out infinite;
+}
+
+.game-feedback-toast {
+    position: fixed;
+    top: 88px;
+    left: 50%;
+    z-index: 70;
+    transform: translate(-50%, -16px) scale(0.92);
+    opacity: 0;
+    min-width: 160px;
+    max-width: min(90vw, 360px);
+    padding: 0.75rem 1rem;
+    border-radius: 999px;
+    border: 2px solid rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-align: center;
+    box-shadow: 0 16px 35px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+    transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.game-feedback-toast.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+}
+
+.feedback-correct {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(6, 95, 70, 0.95));
+    box-shadow: 0 0 28px rgba(16, 185, 129, 0.35);
+}
+
+.feedback-wrong {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(127, 29, 29, 0.95));
+    box-shadow: 0 0 28px rgba(239, 68, 68, 0.32);
 }
 
 /* === Image Styles === */
@@ -320,17 +371,10 @@ body {
 
     /* Card menu lebih ramping */
     .card-menu-cyan {
-        border-width: 3px;
-        border-radius: 20px;
-        box-shadow: 
-            0 6px 0 #005f73,
-            0 8px 15px rgba(0, 240, 255, 0.2);
+        border-radius: 14px;
     }
     .card-menu-cyan:hover {
-        transform: translateY(-4px) scale(1.02);
-        box-shadow: 
-            0 10px 0 #005f73,
-            0 14px 20px rgba(0, 240, 255, 0.3);
+        transform: translateY(-3px);
     }
 
     /* Tabel data lebih readable di mobile */
@@ -838,4 +882,82 @@ body {
         padding: 10px 14px;
         font-size: 12px;
     }
+}
+
+/* ===================================================
+   AR Explorer — Enhanced Styles
+   =================================================== */
+
+/* Spin animation untuk rotate button */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* HUD card di atas viewer */
+.ar-hud-card {
+    animation: hud-fade-in 0.4s ease forwards;
+}
+@keyframes hud-fade-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Viewer glow transition */
+#ar-viewer-wrap {
+    transition: box-shadow 0.6s ease, border-color 0.6s ease;
+}
+
+/* Planet selector tab */
+.ar-planet-tab {
+    transition: background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.ar-planet-tab:hover {
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.1);
+}
+
+/* Info tab content fade transition */
+#info-tab-content {
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* Stats bar fill animation */
+.stat-bar-fill {
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Details accordion custom */
+details > summary::-webkit-details-marker { display: none; }
+details > summary { cursor: pointer; }
+details[open] > summary .chevron { transform: rotate(180deg); }
+details .chevron { transition: transform 0.2s ease; }
+
+/* Info panel scrollbar */
+#planet-info-panel::-webkit-scrollbar { width: 4px; }
+#planet-info-panel::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+#planet-info-panel::-webkit-scrollbar-thumb {
+    background: rgba(0, 212, 255, 0.2);
+    border-radius: 2px;
+}
+
+/* Planet selector scrollbar */
+#planet-selector-scroll::-webkit-scrollbar { height: 3px; }
+#planet-selector-scroll::-webkit-scrollbar-track { background: transparent; }
+#planet-selector-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+}
+
+/* Control button hover glow */
+#ar-btn-rotate:hover, #ar-btn-reset:hover {
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.12);
+}
+#ar-btn-light:hover {
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.12);
+}
+
+/* Fullscreen mode adjustments */
+#ar-viewer-wrap:fullscreen {
+    height: 100vh !important;
+    border-radius: 0 !important;
 }

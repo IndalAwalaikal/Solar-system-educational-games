@@ -3,10 +3,10 @@
    =================================================== */
 
 const ASSETS = {
-    astronautMateri: "https://image.qwenlm.ai/public_source/027ea085-6e2b-4191-a86d-242038d19bd3/1151d65a4-68db-4fd1-a298-dabf16ce7a5c.png",
-    astronautGame: "https://image.qwenlm.ai/public_source/027ea085-6e2b-4191-a86d-242038d19bd3/17faa51de-883c-45df-8b13-2362415e07fc.png",
-    astronautQuiz: "https://image.qwenlm.ai/public_source/027ea085-6e2b-4191-a86d-242038d19bd3/17b7821e6-a726-45b7-b286-eb657c0f78e8.png",
-    astronautSplash: "https://image.qwenlm.ai/public_source/027ea085-6e2b-4191-a86d-242038d19bd3/1544f8181-36c0-489a-9ba3-d702bf4cb270.png",
+    astronautMateri: "assets/img/smp-materi.svg",
+    astronautGame: "assets/img/smp-game.svg",
+    astronautQuiz: "assets/img/smp-ar.svg",
+    astronautSplash: "assets/img/smp-splash.svg",
 
     tataSurya: "https://image.qwenlm.ai/public_source/027ea085-6e2b-4191-a86d-242038d19bd3/1f8473481-c9b2-48fe-a8e8-29b94e48c589.png",
     matahari: "https://image.qwenlm.ai/public_source/027ea085-6e2b-4191-a86d-242038d19bd3/14f6c42d7-5d07-4d17-ad84-482ce2e32e3f.png",

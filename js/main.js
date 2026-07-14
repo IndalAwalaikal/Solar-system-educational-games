@@ -89,32 +89,124 @@ window.onload = function () {
   let w = (canvas.width = window.innerWidth);
   let h = (canvas.height = window.innerHeight);
 
+  // ── Bintang latar diam dengan efek twinkle ──────────────
   const starArray = [];
-  for (let i = 0; i < 80; i++) {
+  for (let i = 0; i < 120; i++) {
     starArray.push({
       x: Math.random() * w,
       y: Math.random() * h,
-      size: Math.random() * 2,
-      speed: 0.08 + Math.random() * 0.2,
+      size: Math.random() * 1.6,
+      opacity: 0.3 + Math.random() * 0.7,
+      twinkleSpeed: 0.005 + Math.random() * 0.012,
+      twinkleDir: Math.random() > 0.5 ? 1 : -1,
     });
   }
 
+  // ── Sistem komet / bintang jatuh ────────────────────────
+  const comets = [];
+  let cometFrame = 0;
+  const COMET_INTERVAL = 180; // ~3 detik di 60fps
+
+  function spawnComet() {
+    const fromTop = Math.random() > 0.25;
+    const angle   = (28 + Math.random() * 28) * (Math.PI / 180); // 28–56 deg diagonal
+    const speed   = 7 + Math.random() * 11;
+
+    comets.push({
+      x:      fromTop ? Math.random() * w * 0.85 : -20,
+      y:      fromTop ? -20 : Math.random() * h * 0.55,
+      vx:     Math.cos(angle) * speed,
+      vy:     Math.sin(angle) * speed,
+      length: 90 + Math.random() * 200,
+      size:   0.7 + Math.random() * 1.5,
+      opacity: 0.85 + Math.random() * 0.15,
+      trail:  [],
+    });
+  }
+
+  function drawComet(c) {
+    if (c.trail.length < 2) return;
+    const maxLen = Math.min(c.trail.length, 35);
+    const start  = c.trail.length - maxLen;
+
+    for (let i = 1; i < maxLen; i++) {
+      const t     = i / maxLen;
+      const alpha = t * c.opacity * 0.85;
+      const lw    = c.size * t * 1.2;
+      const pt0   = c.trail[start + i - 1];
+      const pt1   = c.trail[start + i];
+
+      ctx.beginPath();
+      ctx.strokeStyle = `rgba(200, 220, 255, ${alpha})`;
+      ctx.lineWidth   = lw;
+      ctx.lineCap     = "round";
+      ctx.moveTo(pt0.x, pt0.y);
+      ctx.lineTo(pt1.x, pt1.y);
+      ctx.stroke();
+    }
+
+    // Kepala komet — glow bercahaya
+    const grd = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.size * 5);
+    grd.addColorStop(0,    `rgba(255, 255, 255, ${c.opacity})`);
+    grd.addColorStop(0.35, `rgba(210, 235, 255, ${c.opacity * 0.65})`);
+    grd.addColorStop(0.7,  `rgba(140, 180, 255, ${c.opacity * 0.25})`);
+    grd.addColorStop(1,    "rgba(80, 120, 255, 0)");
+    ctx.beginPath();
+    ctx.fillStyle = grd;
+    ctx.arc(c.x, c.y, c.size * 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Titik inti terang
+    ctx.beginPath();
+    ctx.fillStyle = `rgba(255, 255, 255, ${c.opacity})`;
+    ctx.arc(c.x, c.y, c.size * 0.8, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // ── Loop animasi utama ───────────────────────────────────
   function animateBackground() {
     ctx.clearRect(0, 0, w, h);
-    ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+
+    // Bintang latar — twinkle halus
     starArray.forEach((star) => {
+      star.opacity += star.twinkleSpeed * star.twinkleDir;
+      if (star.opacity >= 1)    { star.opacity = 1;    star.twinkleDir = -1; }
+      if (star.opacity <= 0.08) { star.opacity = 0.08; star.twinkleDir =  1; }
+
       ctx.beginPath();
+      ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
       ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
       ctx.fill();
-
-      star.y += star.speed;
-      if (star.y > h) {
-        star.y = 0;
-        star.x = Math.random() * w;
-      }
     });
+
+    // Spawn komet setiap COMET_INTERVAL frame
+    cometFrame++;
+    if (cometFrame >= COMET_INTERVAL) {
+      cometFrame = 0;
+      // Spawn 1–3 komet, selisih waktu acak agar tidak serentak persis
+      const count = 1 + (Math.random() > 0.55 ? 1 : 0) + (Math.random() > 0.8 ? 1 : 0);
+      for (let i = 0; i < count; i++) {
+        setTimeout(spawnComet, i * (300 + Math.random() * 700));
+      }
+    }
+
+    // Update & render komet aktif
+    for (let i = comets.length - 1; i >= 0; i--) {
+      const c = comets[i];
+      c.trail.push({ x: c.x, y: c.y });
+      c.x += c.vx;
+      c.y += c.vy;
+
+      drawComet(c);
+
+      if (c.x > w + 60 || c.y > h + 60) {
+        comets.splice(i, 1);
+      }
+    }
+
     requestAnimationFrame(animateBackground);
   }
+
   animateBackground();
 
   window.onresize = function () {

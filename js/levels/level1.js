@@ -108,6 +108,7 @@ const Level1 = {
         
         if (name === targetName) {
             SoundManager.play('correct');
+            GameFeedback.show('correct', GameState.practiceMode ? 'Benar! Mode latihan' : '+100 XP');
             this.targetIndex++;
             GameState.addScore(100);
 
@@ -129,6 +130,7 @@ const Level1 = {
             }
         } else {
             SoundManager.play('incorrect');
+            GameFeedback.show('wrong', 'Urutan belum tepat');
             this.lives--;
             
             element.classList.add('shake-effect');
